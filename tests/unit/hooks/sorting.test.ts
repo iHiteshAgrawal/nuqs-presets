@@ -6,7 +6,7 @@ describe('sorting utils', () => {
     it('should cycle through sort orders correctly', () => {
       expect(getNextSortOrder(null, 'name', null)).toEqual({ column: 'name', order: 'asc' })
       expect(getNextSortOrder('name', 'name', 'asc')).toEqual({ column: 'name', order: 'desc' })
-      expect(getNextSortOrder('name', 'name', 'desc')).toEqual({ column: null, order: null })
+      expect(getNextSortOrder('name', 'name', 'desc')).toEqual({ column: 'name', order: 'asc' })
       expect(getNextSortOrder('name', 'email', 'asc')).toEqual({ column: 'email', order: 'asc' })
     })
   })

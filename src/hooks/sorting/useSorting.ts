@@ -19,12 +19,8 @@ export function useSorting<TColumns extends readonly string[]>(
 
   const [state, setState] = useQueryStates(
     {
-      [sortByKey]: parseAsStringLiteral(columns as unknown as string[]).withDefault(
-        (defaultColumn ?? null) as string
-      ),
-      [sortOrderKey]: parseAsStringLiteral(['asc', 'desc'] as const).withDefault(
-        (defaultOrder ?? null) as 'asc' | 'desc'
-      ),
+      [sortByKey]: parseAsStringLiteral(columns as unknown as string[]),
+      [sortOrderKey]: parseAsStringLiteral(['asc', 'desc'] as const),
     },
     {
       history,
@@ -33,8 +29,9 @@ export function useSorting<TColumns extends readonly string[]>(
     }
   )
 
-  const sortBy = (state[sortByKey] as TColumns[number]) ?? null
-  const sortOrder = (state[sortOrderKey] as SortOrder) ?? null
+  const sortBy =
+    (state[sortByKey] as TColumns[number]) ?? (defaultColumn as TColumns[number]) ?? null
+  const sortOrder = (state[sortOrderKey] as SortOrder) ?? defaultOrder ?? null
 
   const isSorted = sortBy !== null && sortOrder !== null
 

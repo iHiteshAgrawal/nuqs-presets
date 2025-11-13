@@ -1,130 +1,84 @@
 import { useQueryStates } from 'nuqs'
 import { useCallback, useMemo } from 'react'
-import type { z } from 'zod'
-import type { UseFiltersOptions, UseFiltersResult } from './types'
-import { countActiveFilters, parseFilterValue, serializeFilterValue } from './utils'
+import type { UseFiltersOptions, UseFiltersResult, Values } from './types'
+import { countActiveFilters } from './utils'
 
-export function useFilters<TSchema extends z.ZodSchema>(
-  options: UseFiltersOptions<TSchema> = {}
-): UseFiltersResult<z.infer<TSchema>> {
-  const {
-    schema,
-    prefix = '',
-    onChange,
-    history = 'replace',
-    scroll = false,
-    shallow = true,
-  } = options
+// biome-ignore lint/suspicious/noExplicitAny: parsers can be any nuqs parser type
+export function useFilters<TParsers extends Record<string, any>>(
+  options: UseFiltersOptions<TParsers>
+): UseFiltersResult<Values<TParsers>> {
+  const { parsers, onChange, history = 'replace', scroll = false, shallow = true } = options
 
-  const [rawState, setRawState] = useQueryStates(
-    {},
-    {
-      history,
-      scroll,
-      shallow,
-    }
-  )
+  const [filters, setFiltersState] = useQueryStates(parsers, {
+    history,
+    scroll,
+    shallow,
+  })
 
-  const rawFilters = useMemo(() => {
-    const result: Record<string, string> = {}
-    for (const [key, value] of Object.entries(rawState)) {
-      if (prefix && !key.startsWith(prefix)) continue
-      const filterKey = prefix ? key.slice(prefix.length) : key
-      if (typeof value === 'string') {
-        result[filterKey] = value
-      }
-    }
-    return result
-  }, [rawState, prefix])
+  const hasFilters = useMemo(() => countActiveFilters(filters) > 0, [filters])
 
-  const filters = useMemo(() => {
-    const parsed: Record<string, unknown> = {}
-    for (const [key, value] of Object.entries(rawFilters)) {
-      parsed[key] = parseFilterValue(value)
-    }
-
-    if (schema) {
-      try {
-        return schema.parse(parsed) as z.infer<TSchema>
-      } catch {
-        return {} as z.infer<TSchema>
-      }
-    }
-
-    return parsed as z.infer<TSchema>
-  }, [rawFilters, schema])
-
-  const hasFilters = useMemo(
-    () => countActiveFilters(filters as Record<string, unknown>) > 0,
-    [filters]
-  )
-
-  const activeCount = useMemo(
-    () => countActiveFilters(filters as Record<string, unknown>),
-    [filters]
-  )
+  const activeCount = useMemo(() => countActiveFilters(filters), [filters])
 
   const setFilter = useCallback(
-    (key: string, value: unknown) => {
-      const filterKey = prefix ? `${prefix}${key}` : key
-      const serialized = serializeFilterValue(value)
-      setRawState({ [filterKey]: serialized })
+    (key: keyof Values<TParsers>, value: unknown) => {
+      // biome-ignore lint/suspicious/noExplicitAny: dynamic filter updates
+      setFiltersState({ [key]: value === undefined ? null : value } as any)
 
       if (onChange) {
-        const newFilters = { ...(filters as object), [key]: value }
-        onChange(newFilters as z.infer<TSchema>)
+        const newFilters = { ...filters, [key]: value } as Values<TParsers>
+        onChange(newFilters)
       }
     },
-    [setRawState, prefix, filters, onChange]
+    [setFiltersState, filters, onChange]
   )
 
   const setFilters = useCallback(
-    (newFilters: Partial<z.infer<TSchema>>) => {
-      const updates: Record<string, string | null> = {}
+    (newFilters: Partial<Values<TParsers>>) => {
+      const updates: Record<string, unknown> = {}
       for (const [key, value] of Object.entries(newFilters)) {
-        const filterKey = prefix ? `${prefix}${key}` : key
-        updates[filterKey] = serializeFilterValue(value)
+        updates[key] = value === undefined ? null : value
       }
-      setRawState(updates)
+      // biome-ignore lint/suspicious/noExplicitAny: dynamic filter updates
+      setFiltersState(updates as any)
 
       if (onChange) {
-        const merged = { ...(filters as object), ...newFilters }
-        onChange(merged as z.infer<TSchema>)
+        const merged = { ...filters, ...newFilters } as Values<TParsers>
+        onChange(merged)
       }
     },
-    [setRawState, prefix, filters, onChange]
+    [setFiltersState, filters, onChange]
   )
 
   const removeFilter = useCallback(
-    (key: string) => {
-      const filterKey = prefix ? `${prefix}${key}` : key
-      setRawState({ [filterKey]: null })
+    (key: keyof Values<TParsers>) => {
+      // biome-ignore lint/suspicious/noExplicitAny: dynamic filter updates
+      setFiltersState({ [key]: null } as any)
 
       if (onChange) {
-        const newFilters = { ...(filters as object) }
-        delete (newFilters as Record<string, unknown>)[key]
-        onChange(newFilters as z.infer<TSchema>)
+        const newFilters = { ...filters } as Values<TParsers>
+        delete newFilters[key as keyof typeof newFilters]
+        onChange(newFilters)
       }
     },
-    [setRawState, prefix, filters, onChange]
+    [setFiltersState, filters, onChange]
   )
 
   const clearFilters = useCallback(() => {
     const updates: Record<string, null> = {}
-    for (const key of Object.keys(rawFilters)) {
-      const filterKey = prefix ? `${prefix}${key}` : key
-      updates[filterKey] = null
+    for (const key of Object.keys(filters)) {
+      updates[key] = null
     }
-    setRawState(updates)
+    // biome-ignore lint/suspicious/noExplicitAny: dynamic filter updates
+    setFiltersState(updates as any)
 
     if (onChange) {
-      onChange({} as z.infer<TSchema>)
+      onChange({} as Values<TParsers>)
     }
-  }, [setRawState, rawFilters, prefix, onChange])
+  }, [setFiltersState, filters, onChange])
 
   const toggleFilter = useCallback(
-    (key: string, value: unknown) => {
-      const currentValue = (filters as Record<string, unknown>)[key]
+    (key: keyof Values<TParsers>, value: unknown) => {
+      const currentValue = filters[key]
       if (currentValue === value) {
         removeFilter(key)
       } else {
@@ -135,8 +89,8 @@ export function useFilters<TSchema extends z.ZodSchema>(
   )
 
   const getFilterValues = useCallback(
-    (key: string): unknown[] => {
-      const value = (filters as Record<string, unknown>)[key]
+    (key: keyof Values<TParsers>): unknown[] => {
+      const value = filters[key]
       if (Array.isArray(value)) return value
       if (value !== undefined && value !== null) return [value]
       return []
@@ -145,8 +99,8 @@ export function useFilters<TSchema extends z.ZodSchema>(
   )
 
   const isFilterActive = useCallback(
-    (key: string, value?: unknown): boolean => {
-      const currentValue = (filters as Record<string, unknown>)[key]
+    (key: keyof Values<TParsers>, value?: unknown): boolean => {
+      const currentValue = filters[key]
       if (value !== undefined) {
         if (Array.isArray(currentValue)) {
           return currentValue.includes(value)
@@ -159,17 +113,25 @@ export function useFilters<TSchema extends z.ZodSchema>(
   )
 
   return {
-    filters,
-    rawFilters,
+    filters: filters as Values<TParsers>,
     hasFilters,
     activeCount,
-    setFilter,
+    setFilter: setFilter as <K extends keyof Values<TParsers>>(
+      key: K,
+      value: Values<TParsers>[K]
+    ) => void,
     setFilters,
     removeFilter,
     clearFilters,
-    toggleFilter,
+    toggleFilter: toggleFilter as <K extends keyof Values<TParsers>>(
+      key: K,
+      value: Values<TParsers>[K]
+    ) => void,
     getFilterValues,
-    isFilterActive,
+    isFilterActive: isFilterActive as <K extends keyof Values<TParsers>>(
+      key: K,
+      value?: Values<TParsers>[K]
+    ) => boolean,
     isPending: false,
   }
 }
