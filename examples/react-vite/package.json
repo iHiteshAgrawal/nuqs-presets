@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "nuqs": "^2.7.3",
-    "nuqs-presets": "0.1.0..",
+    "nuqs-presets": "file:../..",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-router-dom": "^7.2.1"
