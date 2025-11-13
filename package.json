@@ -1,0 +1,139 @@
+{
+  "name": "nuqs-presets",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "High-level pattern hooks for nuqs - pagination, filtering, sorting, and more",
+  "author": {
+    "name": "Hitesh Agrawal",
+    "url": "https://github.com/iHiteshAgrawal"
+  },
+  "license": "MIT",
+  "workspaces": [
+    "examples/*"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/iHiteshAgrawal/nuqs-presets.git"
+  },
+  "homepage": "https://github.com/iHiteshAgrawal/nuqs-presets",
+  "bugs": "https://github.com/iHiteshAgrawal/nuqs-presets/issues",
+  "keywords": [
+    "nuqs",
+    "nextjs",
+    "url-state",
+    "pagination",
+    "filtering",
+    "sorting",
+    "search",
+    "react",
+    "hooks",
+    "typescript"
+  ],
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    },
+    "./pagination": {
+      "types": "./dist/hooks/pagination/index.d.ts",
+      "import": "./dist/hooks/pagination/index.mjs",
+      "require": "./dist/hooks/pagination/index.js"
+    },
+    "./filtering": {
+      "types": "./dist/hooks/filtering/index.d.ts",
+      "import": "./dist/hooks/filtering/index.mjs",
+      "require": "./dist/hooks/filtering/index.js"
+    },
+    "./sorting": {
+      "types": "./dist/hooks/sorting/index.d.ts",
+      "import": "./dist/hooks/sorting/index.mjs",
+      "require": "./dist/hooks/sorting/index.js"
+    },
+    "./search": {
+      "types": "./dist/hooks/search/index.d.ts",
+      "import": "./dist/hooks/search/index.mjs",
+      "require": "./dist/hooks/search/index.js"
+    },
+    "./tabs": {
+      "types": "./dist/hooks/tabs/index.d.ts",
+      "import": "./dist/hooks/tabs/index.mjs",
+      "require": "./dist/hooks/tabs/index.js"
+    },
+    "./date-range": {
+      "types": "./dist/hooks/date-range/index.d.ts",
+      "import": "./dist/hooks/date-range/index.mjs",
+      "require": "./dist/hooks/date-range/index.js"
+    },
+    "./multi-select": {
+      "types": "./dist/hooks/multi-select/index.d.ts",
+      "import": "./dist/hooks/multi-select/index.mjs",
+      "require": "./dist/hooks/multi-select/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md"
+  ],
+  "sideEffects": false,
+  "peerDependencies": {
+    "nuqs": "^2.7.0",
+    "react": "^18.3.0 || ^19.0.0"
+  },
+  "peerDependenciesMeta": {
+    "zod": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.3.5",
+    "@changesets/cli": "^2.29.7",
+    "@testing-library/react": "^16.3.0",
+    "@types/node": "^24.10.1",
+    "@types/react": "^18.3.26",
+    "@types/react-dom": "^18.3.5",
+    "happy-dom": "^20.0.10",
+    "nuqs": "^2.7.3",
+    "publint": "^0.3.15",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "size-limit": "^11.2.0",
+    "tsup": "^8.5.1",
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.8",
+    "zod": "^4.1.12"
+  },
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:ui": "vitest --ui",
+    "test:coverage": "vitest --coverage",
+    "check-types": "tsc --noEmit",
+    "lint": "biome check .",
+    "lint:fix": "biome check . --write",
+    "format": "biome format . --write",
+    "size": "size-limit",
+    "publint": "publint",
+    "changeset": "changeset",
+    "version": "changeset version",
+    "release": "npm run build && changeset publish",
+    "prepublishOnly": "npm run build"
+  },
+  "size-limit": [
+    {
+      "path": "dist/index.js",
+      "limit": "10 kB"
+    },
+    {
+      "path": "dist/hooks/pagination/index.js",
+      "limit": "2 kB"
+    }
+  ]
+}

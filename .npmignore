@@ -1,0 +1,24 @@
+# Source files
+src/
+tests/
+
+# Configuration files
+tsconfig.json
+tsconfig.build.json
+tsup.config.ts
+vitest.config.ts
+biome.json
+.changeset/
+
+# CI/CD
+.github/
+
+# Development
+coverage/
+node_modules/
+.DS_Store
+*.log
+
+# Git
+.git/
+.gitignore
