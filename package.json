@@ -1,6 +1,6 @@
 {
   "name": "nuqs-presets",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "type": "module",
   "description": "High-level pattern hooks for nuqs - pagination, filtering, sorting, and more",
   "author": {
@@ -29,49 +29,49 @@
     "hooks",
     "typescript"
   ],
-  "main": "./dist/index.js",
-  "module": "./dist/index.mjs",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/index.mjs",
-      "require": "./dist/index.js"
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
     },
     "./pagination": {
       "types": "./dist/hooks/pagination/index.d.ts",
-      "import": "./dist/hooks/pagination/index.mjs",
-      "require": "./dist/hooks/pagination/index.js"
+      "import": "./dist/hooks/pagination/index.js",
+      "require": "./dist/hooks/pagination/index.cjs"
     },
     "./filtering": {
       "types": "./dist/hooks/filtering/index.d.ts",
-      "import": "./dist/hooks/filtering/index.mjs",
-      "require": "./dist/hooks/filtering/index.js"
+      "import": "./dist/hooks/filtering/index.js",
+      "require": "./dist/hooks/filtering/index.cjs"
     },
     "./sorting": {
       "types": "./dist/hooks/sorting/index.d.ts",
-      "import": "./dist/hooks/sorting/index.mjs",
-      "require": "./dist/hooks/sorting/index.js"
+      "import": "./dist/hooks/sorting/index.js",
+      "require": "./dist/hooks/sorting/index.cjs"
     },
     "./search": {
       "types": "./dist/hooks/search/index.d.ts",
-      "import": "./dist/hooks/search/index.mjs",
-      "require": "./dist/hooks/search/index.js"
+      "import": "./dist/hooks/search/index.js",
+      "require": "./dist/hooks/search/index.cjs"
     },
     "./tabs": {
       "types": "./dist/hooks/tabs/index.d.ts",
-      "import": "./dist/hooks/tabs/index.mjs",
-      "require": "./dist/hooks/tabs/index.js"
+      "import": "./dist/hooks/tabs/index.js",
+      "require": "./dist/hooks/tabs/index.cjs"
     },
     "./date-range": {
       "types": "./dist/hooks/date-range/index.d.ts",
-      "import": "./dist/hooks/date-range/index.mjs",
-      "require": "./dist/hooks/date-range/index.js"
+      "import": "./dist/hooks/date-range/index.js",
+      "require": "./dist/hooks/date-range/index.cjs"
     },
     "./multi-select": {
       "types": "./dist/hooks/multi-select/index.d.ts",
-      "import": "./dist/hooks/multi-select/index.mjs",
-      "require": "./dist/hooks/multi-select/index.js"
+      "import": "./dist/hooks/multi-select/index.js",
+      "require": "./dist/hooks/multi-select/index.cjs"
     }
   },
   "files": [

@@ -1,5 +1,12 @@
 # nuqs-presets
 
+## 0.1.1 - 2025-11-13
+
+### 🐛 Bug Fixes
+
+- Fix package.json exports to use correct file extensions (`.js` for ESM, `.cjs` for CJS)
+- Fix `main` and `module` fields to point to actual build outputs
+
 ## 0.1.0 - 2025-11-13
 
 ### 🎉 Initial Release
