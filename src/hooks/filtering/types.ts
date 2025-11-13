@@ -1,25 +1,25 @@
-import type { z } from 'zod'
+import type { Values } from 'nuqs'
 import type { BaseHookOptions } from '../../types'
 
-export interface UseFiltersOptions<TSchema extends z.ZodSchema = z.ZodSchema>
+// biome-ignore lint/suspicious/noExplicitAny: parsers can be any nuqs parser type
+export interface UseFiltersOptions<TParsers extends Record<string, any> = Record<string, any>>
   extends BaseHookOptions {
-  schema?: TSchema
-  prefix?: string
-  clearOnDefault?: boolean
-  onChange?: (filters: z.infer<TSchema>) => void
+  parsers: TParsers
+  onChange?: (filters: Values<TParsers>) => void
 }
 
 export interface UseFiltersResult<TFilters = Record<string, unknown>> {
   filters: TFilters
-  rawFilters: Record<string, string>
   hasFilters: boolean
   activeCount: number
-  setFilter: (key: string, value: unknown) => void
+  setFilter: <K extends keyof TFilters>(key: K, value: TFilters[K]) => void
   setFilters: (filters: Partial<TFilters>) => void
-  removeFilter: (key: string) => void
+  removeFilter: (key: keyof TFilters) => void
   clearFilters: () => void
-  toggleFilter: (key: string, value: unknown) => void
-  getFilterValues: (key: string) => unknown[]
-  isFilterActive: (key: string, value?: unknown) => boolean
+  toggleFilter: <K extends keyof TFilters>(key: K, value: TFilters[K]) => void
+  getFilterValues: (key: keyof TFilters) => unknown[]
+  isFilterActive: <K extends keyof TFilters>(key: K, value?: TFilters[K]) => boolean
   isPending: boolean
 }
+
+export type { Values }

@@ -5,7 +5,7 @@ import { usePagination } from 'nuqs-presets/pagination'
 import { useSearch } from 'nuqs-presets/search'
 import { useSorting } from 'nuqs-presets/sorting'
 import { useMemo } from 'react'
-import { filterSchema } from '@/lib/filter-schema'
+import { filterParsers } from '@/app/search-params'
 import { getFilteredProducts, products } from '@/lib/products'
 import { FilterBadges } from './FilterBadges'
 import { Pagination } from './Pagination'
@@ -18,7 +18,7 @@ export function ProductGrid() {
   })
 
   const { filters } = useFilters({
-    schema: filterSchema,
+    parsers: filterParsers,
   })
 
   const { sortBy, sortOrder } = useSorting({

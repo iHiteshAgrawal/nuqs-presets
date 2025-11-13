@@ -1,13 +1,15 @@
 'use client'
 
 import { useFilters } from 'nuqs-presets/filtering'
-import { filterSchema } from '@/lib/filter-schema'
+import { filterParsers } from '@/app/search-params'
 import { BRANDS, CATEGORIES } from '@/lib/products'
 
 export function FilterSidebar() {
   const { filters, setFilter, clearFilters, hasFilters } = useFilters({
-    schema: filterSchema,
+    parsers: filterParsers,
   })
+
+  console.log('Current filters:', filters)
 
   return (
     <div className="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg p-6 sticky top-4">

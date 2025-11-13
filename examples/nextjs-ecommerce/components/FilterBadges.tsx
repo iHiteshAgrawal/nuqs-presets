@@ -2,11 +2,11 @@
 
 import { useFilters } from 'nuqs-presets/filtering'
 import { useSearch } from 'nuqs-presets/search'
-import { filterSchema } from '@/lib/filter-schema'
+import { filterParsers } from '@/app/search-params'
 
 export function FilterBadges() {
   const { filters, setFilter, clearFilters, hasFilters } = useFilters({
-    schema: filterSchema,
+    parsers: filterParsers,
   })
   const { debouncedQuery, setQuery } = useSearch({
     debounce: 300,
@@ -28,7 +28,7 @@ export function FilterBadges() {
         label: `Category: ${category}`,
         onRemove: () => {
           const newCategories = filters.categories?.filter((c) => c !== category)
-          setFilter('categories', newCategories?.length ? newCategories : undefined)
+          setFilter('categories', newCategories?.length ? newCategories : null)
         },
       })
     }
@@ -40,37 +40,37 @@ export function FilterBadges() {
         label: `Brand: ${brand}`,
         onRemove: () => {
           const newBrands = filters.brands?.filter((b) => b !== brand)
-          setFilter('brands', newBrands?.length ? newBrands : undefined)
+          setFilter('brands', newBrands?.length ? newBrands : null)
         },
       })
     }
   }
 
-  if (filters.minPrice !== undefined) {
+  if (filters.minPrice !== null && filters.minPrice !== undefined) {
     badges.push({
       label: `Min: $${filters.minPrice}`,
-      onRemove: () => setFilter('minPrice', undefined),
+      onRemove: () => setFilter('minPrice', null),
     })
   }
 
-  if (filters.maxPrice !== undefined) {
+  if (filters.maxPrice !== null && filters.maxPrice !== undefined) {
     badges.push({
       label: `Max: $${filters.maxPrice}`,
-      onRemove: () => setFilter('maxPrice', undefined),
+      onRemove: () => setFilter('maxPrice', null),
     })
   }
 
-  if (filters.minRating !== undefined) {
+  if (filters.minRating !== null && filters.minRating !== undefined) {
     badges.push({
       label: `Rating: ${filters.minRating}+ ⭐`,
-      onRemove: () => setFilter('minRating', undefined),
+      onRemove: () => setFilter('minRating', null),
     })
   }
 
   if (filters.inStock) {
     badges.push({
       label: 'In Stock',
-      onRemove: () => setFilter('inStock', undefined),
+      onRemove: () => setFilter('inStock', null),
     })
   }
 

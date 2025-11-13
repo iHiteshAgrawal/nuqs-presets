@@ -1218,13 +1218,13 @@ export const products: Product[] = [
 ]
 
 export function getFilteredProducts(filters: {
-  categories?: string[]
-  brands?: string[]
-  minPrice?: number
-  maxPrice?: number
-  minRating?: number
-  inStock?: boolean
-  search?: string
+  categories?: string[] | null
+  brands?: string[] | null
+  minPrice?: number | null
+  maxPrice?: number | null
+  minRating?: number | null
+  inStock?: boolean | null
+  search?: string | null
 }) {
   return products.filter((product) => {
     if (filters.categories?.length && !filters.categories.includes(product.category)) {
@@ -1233,16 +1233,16 @@ export function getFilteredProducts(filters: {
     if (filters.brands?.length && !filters.brands.includes(product.brand)) {
       return false
     }
-    if (filters.minPrice !== undefined && product.price < filters.minPrice) {
+    if (filters.minPrice != null && product.price < filters.minPrice) {
       return false
     }
-    if (filters.maxPrice !== undefined && product.price > filters.maxPrice) {
+    if (filters.maxPrice != null && product.price > filters.maxPrice) {
       return false
     }
-    if (filters.minRating !== undefined && product.rating < filters.minRating) {
+    if (filters.minRating != null && product.rating < filters.minRating) {
       return false
     }
-    if (filters.inStock !== undefined && product.inStock !== filters.inStock) {
+    if (filters.inStock != null && product.inStock !== filters.inStock) {
       return false
     }
     if (filters.search) {

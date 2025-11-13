@@ -16,8 +16,8 @@ export function ServerFilterSummary() {
 
   const parts = []
   if (q) parts.push(`matching "${q}"`)
-  if (categories.length) parts.push(`in ${categories.join(', ')}`)
-  if (brands.length) parts.push(`from ${brands.join(', ')}`)
+  if (categories?.length) parts.push(`in ${categories.join(', ')}`)
+  if (brands?.length) parts.push(`from ${brands.join(', ')}`)
   if (minPrice !== undefined || maxPrice !== undefined) {
     const priceRange = []
     if (minPrice !== undefined) priceRange.push(`over $${minPrice}`)
