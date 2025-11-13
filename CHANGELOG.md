@@ -1,5 +1,17 @@
 # nuqs-presets
 
+## 0.1.2 - 2025-11-14
+
+### 🐛 Bug Fixes
+
+- **`useFilters`** - Fixed type safety by properly inferring filter types from parsers using `Values<TParsers>`
+- **`useFilters`** - Fixed null handling throughout the filtering system
+  - FilterBadges now correctly checks for `!= null` instead of `!== undefined`
+  - Product filtering now properly handles null values from parsers
+  - Filter removal now sets `null` instead of `undefined` to match nuqs behavior
+- Fixed false-positive active filters showing null values (e.g., "Min: $null, Max: $null")
+- Fixed products not displaying when all filters were null
+
 ## 0.1.1 - 2025-11-13
 
 ### 🐛 Bug Fixes
