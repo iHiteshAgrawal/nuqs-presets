@@ -3,7 +3,7 @@ export function LoadingCards() {
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-8">
       {[...Array(4)].map((_, i) => (
         <div
-          key={i}
+          key={`loading-card-${i + 1}`}
           className="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg p-6 animate-pulse"
         >
           <div className="flex items-center justify-between mb-2">

@@ -1,5 +1,5 @@
-import { ProductGrid } from '@/components/ProductGrid'
 import { FilterSidebar } from '@/components/FilterSidebar'
+import { ProductGrid } from '@/components/ProductGrid'
 import { SearchBar } from '@/components/SearchBar'
 import { ServerFilterSummary } from '@/components/ServerFilterSummary'
 import { searchParamsCache } from './search-params'

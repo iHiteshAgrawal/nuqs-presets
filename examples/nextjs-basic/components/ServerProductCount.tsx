@@ -9,8 +9,7 @@ export function ServerProductCount() {
     const searchLower = q.toLowerCase()
     filteredProducts = products.filter(
       (p) =>
-        p.name.toLowerCase().includes(searchLower) ||
-        p.category.toLowerCase().includes(searchLower)
+        p.name.toLowerCase().includes(searchLower) || p.category.toLowerCase().includes(searchLower)
     )
   }
 

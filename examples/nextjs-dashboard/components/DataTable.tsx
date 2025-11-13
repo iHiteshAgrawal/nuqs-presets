@@ -1,27 +1,22 @@
 'use client'
 
+import { useDateRange } from 'nuqs-presets/date-range'
+import { useMultiSelect } from 'nuqs-presets/multi-select'
 import { usePagination } from 'nuqs-presets/pagination'
 import { useSorting } from 'nuqs-presets/sorting'
 import { useMemo } from 'react'
-import { generateTableData, metricsData } from '@/lib/analytics'
-import { useDateRange } from 'nuqs-presets/date-range'
-import { useMultiSelect } from 'nuqs-presets/multi-select'
-import { ALL_REGIONS, ALL_CATEGORIES } from '@/lib/analytics'
+import { ALL_CATEGORIES, ALL_REGIONS, generateTableData, metricsData } from '@/lib/analytics'
 
 export function DataTable() {
   const { startDate, endDate } = useDateRange({
     defaultPreset: 'last7days',
   })
 
-  const {
-    selected: selectedRegions,
-  } = useMultiSelect({
+  const { selected: selectedRegions } = useMultiSelect({
     allItems: ALL_REGIONS,
   })
 
-  const {
-    selected: selectedCategories,
-  } = useMultiSelect({
+  const { selected: selectedCategories } = useMultiSelect({
     allItems: ALL_CATEGORIES,
   })
 
@@ -94,7 +89,9 @@ export function DataTable() {
     <div className="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg overflow-hidden">
       <div className="px-6 py-4 border-b border-gray-300 dark:border-gray-700">
         <div className="flex items-center justify-between">
-          <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Performance Data</h2>
+          <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+            Performance Data
+          </h2>
           <select
             value={pageSize}
             onChange={(e) => setPageSize(Number(e.target.value))}

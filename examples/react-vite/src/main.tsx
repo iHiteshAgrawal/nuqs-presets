@@ -1,7 +1,7 @@
+import { NuqsAdapter } from 'nuqs/adapters/react-router'
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import { NuqsAdapter } from 'nuqs/adapters/react-router'
+import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import { ArticleList } from './routes/articles'
 import './index.css'
 

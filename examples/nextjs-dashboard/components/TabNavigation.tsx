@@ -10,7 +10,12 @@ const tabs = [
 ] as const
 
 export function TabNavigation() {
-  const { activeTab, setTab, isActive } = useTabs(['overview', 'analytics', 'reports', 'settings'] as const)
+  const { activeTab, setTab, isActive } = useTabs([
+    'overview',
+    'analytics',
+    'reports',
+    'settings',
+  ] as const)
 
   return (
     <div className="border-b border-gray-200 dark:border-gray-700">

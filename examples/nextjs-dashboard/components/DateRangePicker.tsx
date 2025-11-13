@@ -54,26 +54,34 @@ export function DateRangePicker() {
 
       <div className="grid grid-cols-2 gap-3">
         <div>
-          <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
+          <label
+            htmlFor="start-date"
+            className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1"
+          >
             Start Date
           </label>
           <input
+            id="start-date"
             type="date"
             value={formatDate(startDate)}
             onChange={(e) => setRange(parseDate(e.target.value), endDate)}
             className="w-full px-3 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
-        </div>
-        <div>
-          <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
-            End Date
-          </label>
-          <input
-            type="date"
-            value={formatDate(endDate)}
-            onChange={(e) => setRange(startDate, parseDate(e.target.value))}
-            className="w-full px-3 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
+          <div>
+            <label
+              htmlFor="end-date"
+              className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1"
+            >
+              End Date
+            </label>
+            <input
+              id="end-date"
+              type="date"
+              value={formatDate(endDate)}
+              onChange={(e) => setRange(startDate, parseDate(e.target.value))}
+              className="w-full px-3 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
         </div>
       </div>
     </div>

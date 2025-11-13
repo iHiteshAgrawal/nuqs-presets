@@ -39,9 +39,7 @@ export function Pagination({
         >
           Previous
         </button>
-        <span className="px-4 py-2 text-gray-900 dark:text-gray-100 font-medium">
-          Page {page}
-        </span>
+        <span className="px-4 py-2 text-gray-900 dark:text-gray-100 font-medium">Page {page}</span>
         <button
           type="button"
           onClick={nextPage}

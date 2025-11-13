@@ -1,14 +1,14 @@
 'use client'
 
-import { usePagination } from 'nuqs-presets/pagination'
 import { useFilters } from 'nuqs-presets/filtering'
-import { useSorting } from 'nuqs-presets/sorting'
+import { usePagination } from 'nuqs-presets/pagination'
 import { useSearch } from 'nuqs-presets/search'
+import { useSorting } from 'nuqs-presets/sorting'
 import { useMemo } from 'react'
-import { products, getFilteredProducts } from '@/lib/products'
 import { filterSchema } from '@/lib/filter-schema'
-import { Pagination } from './Pagination'
+import { getFilteredProducts, products } from '@/lib/products'
 import { FilterBadges } from './FilterBadges'
+import { Pagination } from './Pagination'
 import { SortDropdown } from './SortDropdown'
 
 export function ProductGrid() {
@@ -69,7 +69,10 @@ export function ProductGrid() {
         </div>
 
         <div className="flex items-center gap-2">
-          <label htmlFor="pageSize" className="text-sm font-medium text-gray-700 dark:text-gray-300">
+          <label
+            htmlFor="pageSize"
+            className="text-sm font-medium text-gray-700 dark:text-gray-300"
+          >
             Per page:
           </label>
           <select
@@ -123,9 +126,13 @@ export function ProductGrid() {
                     {product.description}
                   </p>
                   <div className="flex items-center gap-2 mb-2">
-                    <span className="text-sm text-gray-600 dark:text-gray-400">{product.brand}</span>
+                    <span className="text-sm text-gray-600 dark:text-gray-400">
+                      {product.brand}
+                    </span>
                     <span className="text-gray-300 dark:text-gray-600">•</span>
-                    <span className="text-sm text-gray-600 dark:text-gray-400">{product.category}</span>
+                    <span className="text-sm text-gray-600 dark:text-gray-400">
+                      {product.category}
+                    </span>
                   </div>
                   <div className="flex items-center justify-between">
                     <span className="text-xl font-bold text-gray-900 dark:text-gray-100">

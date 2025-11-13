@@ -2,8 +2,7 @@ import { searchParamsCache } from '@/app/search-params'
 import { getFilteredProducts } from '@/lib/products'
 
 export function ServerFilterSummary() {
-  const { q, categories, brands, minPrice, maxPrice, minRating, inStock } =
-    searchParamsCache.all()
+  const { q, categories, brands, minPrice, maxPrice, minRating, inStock } = searchParamsCache.all()
 
   const filteredProducts = getFilteredProducts({
     categories,
@@ -29,11 +28,7 @@ export function ServerFilterSummary() {
   if (inStock) parts.push('in stock')
 
   if (parts.length === 0) {
-    return (
-      <p className="text-sm text-gray-600 dark:text-gray-400">
-        Browse all products
-      </p>
-    )
+    return <p className="text-sm text-gray-600 dark:text-gray-400">Browse all products</p>
   }
 
   return (

@@ -1,6 +1,6 @@
+import { useMultiSelect, usePagination, useSearch, useSorting } from 'nuqs-presets'
 import { useMemo } from 'react'
-import { useSearch, useSorting, usePagination, useMultiSelect } from 'nuqs-presets'
-import { articles, ALL_TAGS } from '../data/articles'
+import { ALL_TAGS, articles } from '../data/articles'
 
 export function ArticleList() {
   const { query, setQuery, debouncedQuery } = useSearch({
@@ -8,7 +8,12 @@ export function ArticleList() {
     minLength: 1,
   })
 
-  const { selected: selectedTags, toggle, deselectAll, isSelected } = useMultiSelect({
+  const {
+    selected: selectedTags,
+    toggle,
+    deselectAll,
+    isSelected,
+  } = useMultiSelect({
     allItems: ALL_TAGS,
   })
 
@@ -235,11 +240,21 @@ export function ArticleList() {
               {filteredAndSorted.length} articles
             </p>
             <div style={{ display: 'flex', gap: '0.5rem' }}>
-              <button type="button" onClick={prevPage} disabled={!hasPrevPage} style={paginationButtonStyle}>
+              <button
+                type="button"
+                onClick={prevPage}
+                disabled={!hasPrevPage}
+                style={paginationButtonStyle}
+              >
                 Previous
               </button>
               <span style={{ padding: '0.5rem 1rem' }}>Page {page}</span>
-              <button type="button" onClick={nextPage} disabled={!hasNextPage} style={paginationButtonStyle}>
+              <button
+                type="button"
+                onClick={nextPage}
+                disabled={!hasNextPage}
+                style={paginationButtonStyle}
+              >
                 Next
               </button>
             </div>

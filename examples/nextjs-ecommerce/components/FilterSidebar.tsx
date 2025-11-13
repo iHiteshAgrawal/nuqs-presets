@@ -55,33 +55,47 @@ export function FilterSidebar() {
           <h3 className="font-semibold mb-3 text-gray-900 dark:text-gray-100">Price Range</h3>
           <div className="space-y-3">
             <div>
-              <label className="text-sm text-gray-700 dark:text-gray-300 block mb-1">
+              <label
+                htmlFor="minPrice"
+                className="text-sm text-gray-700 dark:text-gray-300 block mb-1"
+              >
                 Min: ${filters.minPrice ?? 0}
               </label>
               <input
+                id="minPrice"
                 type="range"
                 min="0"
                 max="3000"
                 step="50"
                 value={filters.minPrice ?? 0}
                 onChange={(e) =>
-                  setFilter('minPrice', Number(e.target.value) > 0 ? Number(e.target.value) : undefined)
+                  setFilter(
+                    'minPrice',
+                    Number(e.target.value) > 0 ? Number(e.target.value) : undefined
+                  )
                 }
                 className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
               />
             </div>
             <div>
-              <label className="text-sm text-gray-700 dark:text-gray-300 block mb-1">
+              <label
+                htmlFor="maxPrice"
+                className="text-sm text-gray-700 dark:text-gray-300 block mb-1"
+              >
                 Max: ${filters.maxPrice ?? 3000}
               </label>
               <input
+                id="maxPrice"
                 type="range"
                 min="0"
                 max="3000"
                 step="50"
                 value={filters.maxPrice ?? 3000}
                 onChange={(e) =>
-                  setFilter('maxPrice', Number(e.target.value) < 3000 ? Number(e.target.value) : undefined)
+                  setFilter(
+                    'maxPrice',
+                    Number(e.target.value) < 3000 ? Number(e.target.value) : undefined
+                  )
                 }
                 className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
               />
@@ -130,9 +144,7 @@ export function FilterSidebar() {
                   onChange={() => setFilter('minRating', rating)}
                   className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 focus:ring-2"
                 />
-                <span className="text-sm text-gray-700 dark:text-gray-300">
-                  {rating}+ ⭐
-                </span>
+                <span className="text-sm text-gray-700 dark:text-gray-300">{rating}+ ⭐</span>
               </label>
             ))}
             {filters.minRating && (

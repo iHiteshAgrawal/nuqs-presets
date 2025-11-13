@@ -87,17 +87,33 @@ export function calculateKPIs(
   const firstHalf = filtered.slice(0, midpoint)
   const secondHalf = filtered.slice(midpoint)
 
-  const firstRevenue = firstHalf.reduce((sum, d) => sum + d.revenue, 0) / Math.max(firstHalf.length, 1)
-  const secondRevenue = secondHalf.reduce((sum, d) => sum + d.revenue, 0) / Math.max(secondHalf.length, 1)
+  const firstRevenue =
+    firstHalf.reduce((sum, d) => sum + d.revenue, 0) / Math.max(firstHalf.length, 1)
+  const secondRevenue =
+    secondHalf.reduce((sum, d) => sum + d.revenue, 0) / Math.max(secondHalf.length, 1)
   const revenueChange = firstRevenue > 0 ? ((secondRevenue - firstRevenue) / firstRevenue) * 100 : 0
 
   const firstUsers = firstHalf.reduce((sum, d) => sum + d.users, 0) / Math.max(firstHalf.length, 1)
-  const secondUsers = secondHalf.reduce((sum, d) => sum + d.users, 0) / Math.max(secondHalf.length, 1)
+  const secondUsers =
+    secondHalf.reduce((sum, d) => sum + d.users, 0) / Math.max(secondHalf.length, 1)
   const usersChange = firstUsers > 0 ? ((secondUsers - firstUsers) / firstUsers) * 100 : 0
 
-  const firstConversionRate = firstHalf.length > 0 ? (firstHalf.reduce((sum, d) => sum + d.conversions, 0) / firstHalf.reduce((sum, d) => sum + d.users, 0)) * 100 : 0
-  const secondConversionRate = secondHalf.length > 0 ? (secondHalf.reduce((sum, d) => sum + d.conversions, 0) / secondHalf.reduce((sum, d) => sum + d.users, 0)) * 100 : 0
-  const conversionChange = firstConversionRate > 0 ? ((secondConversionRate - firstConversionRate) / firstConversionRate) * 100 : 0
+  const firstConversionRate =
+    firstHalf.length > 0
+      ? (firstHalf.reduce((sum, d) => sum + d.conversions, 0) /
+          firstHalf.reduce((sum, d) => sum + d.users, 0)) *
+        100
+      : 0
+  const secondConversionRate =
+    secondHalf.length > 0
+      ? (secondHalf.reduce((sum, d) => sum + d.conversions, 0) /
+          secondHalf.reduce((sum, d) => sum + d.users, 0)) *
+        100
+      : 0
+  const conversionChange =
+    firstConversionRate > 0
+      ? ((secondConversionRate - firstConversionRate) / firstConversionRate) * 100
+      : 0
 
   return {
     revenue: totalRevenue,

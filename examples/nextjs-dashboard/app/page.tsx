@@ -1,12 +1,12 @@
-import { TabNavigation } from '@/components/TabNavigation'
-import { DateRangePicker } from '@/components/DateRangePicker'
-import { RegionMultiSelect } from '@/components/RegionMultiSelect'
-import { CategoryMultiSelect } from '@/components/CategoryMultiSelect'
-import { KPICards } from '@/components/KPICards'
-import { DataTable } from '@/components/DataTable'
-import { searchParamsCache } from './search-params'
 import { Suspense } from 'react'
+import { CategoryMultiSelect } from '@/components/CategoryMultiSelect'
+import { DataTable } from '@/components/DataTable'
+import { DateRangePicker } from '@/components/DateRangePicker'
+import { KPICards } from '@/components/KPICards'
 import { LoadingCards } from '@/components/LoadingCards'
+import { RegionMultiSelect } from '@/components/RegionMultiSelect'
+import { TabNavigation } from '@/components/TabNavigation'
+import { searchParamsCache } from './search-params'
 
 export default async function Home({
   searchParams,
@@ -22,9 +22,7 @@ export default async function Home({
           <h1 className="text-3xl md:text-4xl font-bold mb-2 text-gray-900 dark:text-gray-100">
             Analytics Dashboard
           </h1>
-          <p className="text-gray-700 dark:text-gray-300 text-lg">
-            Real-time metrics and insights
-          </p>
+          <p className="text-gray-700 dark:text-gray-300 text-lg">Real-time metrics and insights</p>
         </header>
 
         <TabNavigation />
