@@ -1,12 +1,14 @@
-'use client'
+"use client";
 
-import { useMultiSelect } from 'nuqs-presets/multi-select'
-import { ALL_REGIONS } from '@/lib/analytics'
+import { useMultiSelect } from "nuqs-presets/multi-select";
+import { ALL_REGIONS } from "@/lib/analytics";
 
 export function RegionMultiSelect() {
-  const { selected, toggle, selectAll, deselectAll, isSelected, hasSelection } = useMultiSelect({
-    allItems: ALL_REGIONS,
-  })
+  const { selected, select, selectAll, deselectAll, isSelected, isEmpty } =
+    useMultiSelect({
+      allItems: ALL_REGIONS,
+      key: "region",
+    });
 
   return (
     <div className="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg p-4">
@@ -22,7 +24,7 @@ export function RegionMultiSelect() {
           >
             All
           </button>
-          {hasSelection && (
+          {!isEmpty && (
             <button
               type="button"
               onClick={deselectAll}
@@ -39,13 +41,13 @@ export function RegionMultiSelect() {
           <button
             key={region}
             type="button"
-            onClick={() => toggle(region)}
+            onClick={() => select(region)}
             className={`
               px-3 py-1.5 text-sm rounded transition-colors
               ${
                 isSelected(region)
-                  ? 'bg-blue-600 text-white dark:bg-blue-500'
-                  : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+                  ? "bg-blue-600 text-white dark:bg-blue-500"
+                  : "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600"
               }
             `}
           >
@@ -54,5 +56,5 @@ export function RegionMultiSelect() {
         ))}
       </div>
     </div>
-  )
+  );
 }

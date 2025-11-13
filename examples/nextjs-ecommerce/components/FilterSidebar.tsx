@@ -41,7 +41,7 @@ export function FilterSidebar() {
                     const newCategories = e.target.checked
                       ? [...current, category]
                       : current.filter((c) => c !== category)
-                    setFilter('categories', newCategories.length > 0 ? newCategories : undefined)
+                    setFilter('categories', newCategories.length > 0 ? newCategories : null)
                   }}
                   className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
                 />
@@ -69,10 +69,7 @@ export function FilterSidebar() {
                 step="50"
                 value={filters.minPrice ?? 0}
                 onChange={(e) =>
-                  setFilter(
-                    'minPrice',
-                    Number(e.target.value) > 0 ? Number(e.target.value) : undefined
-                  )
+                  setFilter('minPrice', Number(e.target.value) > 0 ? Number(e.target.value) : null)
                 }
                 className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
               />
@@ -94,7 +91,7 @@ export function FilterSidebar() {
                 onChange={(e) =>
                   setFilter(
                     'maxPrice',
-                    Number(e.target.value) < 3000 ? Number(e.target.value) : undefined
+                    Number(e.target.value) < 3000 ? Number(e.target.value) : null
                   )
                 }
                 className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
@@ -119,7 +116,7 @@ export function FilterSidebar() {
                     const newBrands = e.target.checked
                       ? [...current, brand]
                       : current.filter((b) => b !== brand)
-                    setFilter('brands', newBrands.length > 0 ? newBrands : undefined)
+                    setFilter('brands', newBrands.length > 0 ? newBrands : null)
                   }}
                   className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
                 />
@@ -150,7 +147,7 @@ export function FilterSidebar() {
             {filters.minRating && (
               <button
                 type="button"
-                onClick={() => setFilter('minRating', undefined)}
+                onClick={() => setFilter('minRating', null)}
                 className="text-sm text-blue-600 dark:text-blue-400 hover:underline ml-2"
               >
                 Clear rating
@@ -164,7 +161,7 @@ export function FilterSidebar() {
             <input
               type="checkbox"
               checked={filters.inStock ?? false}
-              onChange={(e) => setFilter('inStock', e.target.checked ? true : undefined)}
+              onChange={(e) => setFilter('inStock', e.target.checked ? true : null)}
               className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
             />
             <span className="font-semibold text-gray-900 dark:text-gray-100">In Stock Only</span>

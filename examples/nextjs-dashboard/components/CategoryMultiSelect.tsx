@@ -4,8 +4,9 @@ import { useMultiSelect } from 'nuqs-presets/multi-select'
 import { ALL_CATEGORIES } from '@/lib/analytics'
 
 export function CategoryMultiSelect() {
-  const { selected, toggle, selectAll, deselectAll, isSelected, hasSelection } = useMultiSelect({
+  const { selected, toggle, selectAll, deselectAll, isSelected, isEmpty } = useMultiSelect({
     allItems: ALL_CATEGORIES,
+    key: 'category',
   })
 
   return (
@@ -22,7 +23,7 @@ export function CategoryMultiSelect() {
           >
             All
           </button>
-          {hasSelection && (
+          {!isEmpty && (
             <button
               type="button"
               onClick={deselectAll}

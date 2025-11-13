@@ -3,7 +3,7 @@
 import { useDateRange } from 'nuqs-presets/date-range'
 
 export function DateRangePicker() {
-  const { startDate, endDate, setRange, applyPreset } = useDateRange({
+  const { startDate, endDate, setRange, setPreset } = useDateRange({
     defaultPreset: 'last7days',
   })
 
@@ -24,31 +24,24 @@ export function DateRangePicker() {
       <div className="flex flex-wrap gap-2 mb-3">
         <button
           type="button"
-          onClick={() => applyPreset('today')}
+          onClick={() => setPreset('today')}
           className="px-3 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
         >
           Today
         </button>
         <button
           type="button"
-          onClick={() => applyPreset('last7days')}
+          onClick={() => setPreset('last7days')}
           className="px-3 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
         >
           Last 7 days
         </button>
         <button
           type="button"
-          onClick={() => applyPreset('last30days')}
+          onClick={() => setPreset('last30days')}
           className="px-3 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
         >
           Last 30 days
-        </button>
-        <button
-          type="button"
-          onClick={() => applyPreset('last90days')}
-          className="px-3 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
-        >
-          Last 90 days
         </button>
       </div>
 
@@ -64,7 +57,9 @@ export function DateRangePicker() {
             id="start-date"
             type="date"
             value={formatDate(startDate)}
-            onChange={(e) => setRange(parseDate(e.target.value), endDate)}
+            onChange={(e) => {
+              setRange(parseDate(e.target.value)!, endDate!)
+            }}
             className="w-full px-3 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
           <div>
@@ -78,7 +73,7 @@ export function DateRangePicker() {
               id="end-date"
               type="date"
               value={formatDate(endDate)}
-              onChange={(e) => setRange(startDate, parseDate(e.target.value))}
+              onChange={(e) => setRange(startDate!, parseDate(e.target.value)!)}
               className="w-full px-3 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>

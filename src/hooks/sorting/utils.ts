@@ -13,10 +13,6 @@ export function getNextSortOrder(
     return { column: targetColumn, order: 'desc' }
   }
 
-  if (currentOrder === 'desc') {
-    return { column: null, order: null }
-  }
-
   return { column: targetColumn, order: 'asc' }
 }
 
