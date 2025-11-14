@@ -33,20 +33,13 @@ Thank you for your interest in contributing to nuqs-presets! We welcome contribu
    - No linting errors (`npm run lint`)
    - Types are correct (`npm run check-types`)
 
-3. Create a changeset for your changes:
-   ```bash
-   npm run changeset
-   ```
-   - Select the appropriate change type (patch/minor/major)
-   - Write a clear description of your changes
-
-4. Commit your changes:
+3. Commit your changes:
    ```bash
    git add .
    git commit -m "feat: add new feature"
    ```
 
-5. Push your branch and create a pull request
+4. Push your branch and create a pull request
 
 ## Code Style
 

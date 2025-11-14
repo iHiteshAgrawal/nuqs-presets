@@ -92,7 +92,6 @@
   },
   "devDependencies": {
     "@biomejs/biome": "^2.3.5",
-    "@changesets/cli": "^2.29.7",
     "@testing-library/react": "^16.3.0",
     "@types/node": "^24.10.1",
     "@types/react": "^18.3.26",
@@ -121,9 +120,6 @@
     "format": "biome format . --write",
     "size": "size-limit",
     "publint": "publint",
-    "changeset": "changeset",
-    "version": "changeset version",
-    "release": "npm run build && changeset publish",
     "prepublishOnly": "npm run build"
   },
   "size-limit": [
