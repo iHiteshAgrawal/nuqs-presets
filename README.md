@@ -50,7 +50,6 @@ bun add nuqs-presets nuqs
 **Requirements:**
 - `nuqs` ^2.0.0
 - `react` ^18.3.0 or ^19.0.0
-- `zod` ^3.24.0 (optional, for filters with validation)
 
 ## Quick Start
 
@@ -79,16 +78,18 @@ export default function RootLayout({ children }) {
 'use client'
 
 import { usePagination, useFilters, useSorting } from 'nuqs-presets'
-import { z } from 'zod'
+import { parseAsString, parseAsFloat } from 'nuqs'
+
+const filterParsers = {
+  category: parseAsString,
+  minPrice: parseAsFloat,
+}
 
 export function ProductList() {
   const { page, pageSize, nextPage, prevPage, hasNextPage, hasPrevPage } = usePagination()
 
   const { filters, setFilter, clearFilters } = useFilters({
-    schema: z.object({
-      category: z.string().optional(),
-      minPrice: z.number().optional(),
-    })
+    parsers: filterParsers,
   })
 
   const { sortBy, sortOrder, toggleSort } = useSorting({
@@ -131,20 +132,29 @@ const {
 
 ### useFilters
 
-Type-safe filter management with Zod validation.
+Type-safe filter management with nuqs parsers.
 
 ```tsx
+import { parseAsString, parseAsFloat } from 'nuqs'
+
+const filterParsers = {
+  category: parseAsString,
+  minPrice: parseAsFloat,
+  maxPrice: parseAsFloat,
+  inStock: parseAsBoolean,
+}
+
 const {
   filters,       // Current filters (type-safe)
   setFilter,     // Set a single filter
   clearFilters,  // Clear all filters
   hasFilters,    // Any filters active?
 } = useFilters({
-  schema: z.object({
-    category: z.enum(['books', 'tech']).optional(),
-    minPrice: z.number().min(0).optional(),
-  })
+  parsers: filterParsers,
 })
+
+// filters.category is string | null
+// filters.minPrice is number | null
 ```
 
 ### useSorting
@@ -244,17 +254,31 @@ npm run dev
 ```
 Open [http://localhost:3000](http://localhost:3000)
 
-#### [nextjs-ecommerce](./examples/nextjs-ecommerce) - 📦 Coming Soon
+#### [nextjs-ecommerce](./examples/nextjs-ecommerce) - 🧪 Beta
 Advanced e-commerce filtering interface with:
 - Multi-faceted filtering (category, price range, brand)
 - Filter badges with clear functionality
-- Zod schema validation
+- Type-safe parsers with nuqs
 
-#### [nextjs-dashboard](./examples/nextjs-dashboard) - 📦 Coming Soon
+**Run it:**
+```bash
+cd examples/nextjs-ecommerce
+npm run dev
+```
+Open [http://localhost:3000](http://localhost:3000)
+
+#### [nextjs-dashboard](./examples/nextjs-dashboard) - 🧪 Beta
 Admin dashboard demonstrating:
 - Tab-based navigation
 - Data tables with all features
 - Date range filtering
+
+**Run it:**
+```bash
+cd examples/nextjs-dashboard
+npm run dev
+```
+Open [http://localhost:3000](http://localhost:3000)
 
 #### [react-vite](./examples/react-vite) - 📦 Coming Soon
 Framework-agnostic React SPA with:
@@ -272,14 +296,14 @@ See the [examples README](./examples/README.md) for more details.
 'use client'
 
 import { usePagination, useFilters, useSorting, useSearch } from 'nuqs-presets'
-import { z } from 'zod'
+import { parseAsString, parseAsFloat, parseAsBoolean } from 'nuqs'
 
-const filterSchema = z.object({
-  category: z.enum(['electronics', 'books', 'clothing']).optional(),
-  minPrice: z.number().min(0).optional(),
-  maxPrice: z.number().max(10000).optional(),
-  inStock: z.boolean().optional(),
-})
+const filterParsers = {
+  category: parseAsString,
+  minPrice: parseAsFloat,
+  maxPrice: parseAsFloat,
+  inStock: parseAsBoolean,
+}
 
 export function ProductList() {
   const { page, pageSize, setPage, hasNextPage, hasPrevPage } = usePagination({
@@ -288,7 +312,7 @@ export function ProductList() {
   })
 
   const { filters, setFilter, clearFilters, hasFilters } = useFilters({
-    schema: filterSchema,
+    parsers: filterParsers,
   })
 
   const { sortBy, sortOrder, toggleSort } = useSorting({
@@ -382,12 +406,16 @@ All hooks are fully typed with excellent type inference. No need to manually spe
 const { activeTab } = useTabs(['overview', 'analytics', 'settings'] as const)
 // activeTab is typed as 'overview' | 'analytics' | 'settings'
 
+const filterParsers = {
+  category: parseAsString,
+  minPrice: parseAsFloat,
+}
+
 const { filters } = useFilters({
-  schema: z.object({
-    category: z.enum(['books', 'tech']).optional(),
-  })
+  parsers: filterParsers,
 })
-// filters.category is typed as 'books' | 'tech' | undefined
+// filters.category is typed as string | null
+// filters.minPrice is typed as number | null
 ```
 
 ## Contributing
