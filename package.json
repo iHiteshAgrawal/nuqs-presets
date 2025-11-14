@@ -121,6 +121,7 @@
     "size": "size-limit",
     "publint": "publint",
     "prepublishOnly": "npm run build",
+    "registry:sync": "node scripts/sync-registry.js",
     "registry:build": "shadcn build",
     "registry:dev": "shadcn build --watch"
   },
