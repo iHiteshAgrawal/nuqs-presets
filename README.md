@@ -37,6 +37,10 @@ const { page, pageSize, nextPage, prevPage, hasNextPage } = usePagination()
 
 ## Installation
 
+You can install nuqs-presets in two ways:
+
+### Option 1: NPM Package (Recommended for most users)
+
 ```bash
 npm install nuqs-presets nuqs
 # or
@@ -50,6 +54,53 @@ bun add nuqs-presets nuqs
 **Requirements:**
 - `nuqs` ^2.0.0
 - `react` ^18.3.0 or ^19.0.0
+
+### Option 2: shadcn Registry (For customization)
+
+Install hooks directly into your project for full control and customization:
+
+**Direct URL Installation:**
+```bash
+npx shadcn add https://ihiteshagrawal.github.io/nuqs-presets/r/use-pagination.json
+npx shadcn add https://ihiteshagrawal.github.io/nuqs-presets/r/use-sorting.json
+npx shadcn add https://ihiteshagrawal.github.io/nuqs-presets/r/use-filters.json
+# ... other hooks
+```
+
+**With Namespace (Recommended):**
+
+First, add the registry to your `components.json`:
+```json
+{
+  "aliases": {
+    "hooks": "@/hooks",
+    "lib": "@/lib"
+  },
+  "registries": {
+    "nuqs-presets": "https://ihiteshagrawal.github.io/nuqs-presets/r"
+  }
+}
+```
+
+Then install hooks by name:
+```bash
+npx shadcn add nuqs-presets:use-pagination
+npx shadcn add nuqs-presets:use-sorting
+npx shadcn add nuqs-presets:use-filters
+```
+
+**Available Registry Hooks:**
+- `use-pagination` - Complete pagination hook
+- `use-search` - Debounced search hook
+- `use-sorting` - Multi-column sorting hook
+- `use-filtering` - Type-safe filter management
+- `use-multi-select` - Array-based multi-selection
+- `use-tabs` - Type-safe tab navigation
+- `use-date-range` - Date range with presets
+
+**When to use Registry vs NPM:**
+- **NPM Package**: Stable, versioned releases. Best for most projects.
+- **Registry**: Direct file installation. Best when you need to customize implementations, modify behavior, or don't want the package dependency.
 
 ## Quick Start
 
@@ -421,6 +472,85 @@ const { filters } = useFilters({
 ## Contributing
 
 Contributions are welcome! Please read our [Contributing Guide](./CONTRIBUTING.md) first.
+
+### For Contributors: Registry Sync Workflow
+
+This project maintains **two distribution methods** with different source locations:
+
+1. **NPM Package** (`src/` directory)
+   - Uses TypeScript path aliases (`@/types`, `@/utils`)
+   - Source of truth for the package
+   - Built with `tsup` for npm distribution
+
+2. **shadcn Registry** (`registry/default/` directory)
+   - Uses relative imports matching installed structure
+   - Synced from `src/` with automated transformations
+   - Built with `shadcn build` for registry distribution
+
+### Making Changes
+
+When contributing, follow this workflow:
+
+**1. Edit source files in `src/`**
+```bash
+# Make your changes in src/ directory
+# This is the source of truth for the npm package
+```
+
+**2. Sync to registry**
+```bash
+npm run registry:sync
+```
+This automatically:
+- Copies files from `src/` to `registry/default/`
+- Transforms import paths (e.g., `@/types` → `../types`)
+- Detects specific utility imports and transforms to specific files
+- Ensures registry hooks match npm package exactly
+
+**3. Build registry**
+```bash
+npm run registry:build
+```
+
+**4. Test both distributions**
+```bash
+# Test npm package
+npm run build
+npm run test
+
+# Test registry installation
+cd /tmp/test-project
+npx shadcn add /path/to/nuqs-presets/public/r/use-pagination.json
+npm run build
+```
+
+**5. Commit changes**
+```bash
+# Create a feature branch
+git checkout -b feat/your-feature
+
+# Commit both src/ and registry/ changes
+git add src/ registry/ public/r/
+git commit -m "feat: your feature"
+
+# Push and create PR
+git push origin feat/your-feature
+```
+
+### Why Two Sources?
+
+The two-source system exists because:
+- **NPM users** expect a standard package with clean imports via path aliases
+- **Registry users** need files with relative imports that work when copied directly into their projects
+- **shadcn CLI** copies file content verbatim without transforming imports
+- **Automated sync** ensures both distributions stay in sync and provide identical functionality
+
+The sync script intelligently transforms imports:
+- `@/types` → `../types` or `../../types` (depending on depth)
+- `@/utils` → `../../lib/utils/[specific-file]` (detects what's imported)
+- `import { clamp } from '@/utils'` → `import { clamp } from '../../lib/utils/validation'`
+
+This approach gives users the best of both worlds: a stable npm package and customizable registry hooks.
 
 ## License
 
