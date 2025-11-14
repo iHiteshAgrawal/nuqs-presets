@@ -1,6 +1,6 @@
 import { parseAsString, useQueryState } from 'nuqs'
 import { useCallback, useEffect, useMemo } from 'react'
-import { useDebounce } from '../../lib/utils'
+import { useDebounce } from '../../lib/utils/debounce'
 import type { UseSearchOptions, UseSearchResult } from './types'
 
 export function useSearch(options: UseSearchOptions = {}): UseSearchResult {

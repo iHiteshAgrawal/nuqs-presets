@@ -49,6 +49,10 @@ function transformImports(content) {
       if (imports.includes('daysBetween') || imports.includes('addDays')) {
         return "from '../../lib/utils/date'"
       }
+      // useDebounce -> debounce.ts
+      if (imports.includes('useDebounce') || imports.includes('debounce')) {
+        return "from '../../lib/utils/debounce'"
+      }
     }
     // Default: keep the import but point to lib/utils
     return "from '../../lib/utils'"
