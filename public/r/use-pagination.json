@@ -5,9 +5,7 @@
   "title": "Pagination Hook",
   "author": "Hitesh Agrawal",
   "description": "Type-safe pagination state management with URL synchronization using nuqs",
-  "dependencies": [
-    "nuqs@^2.2.2"
-  ],
+  "dependencies": ["nuqs@^2.2.2"],
   "files": [
     {
       "path": "registry/default/types/index.ts",

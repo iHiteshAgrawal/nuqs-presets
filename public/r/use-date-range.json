@@ -5,10 +5,7 @@
   "title": "Date Range Hook",
   "author": "Hitesh Agrawal",
   "description": "Type-safe date range state management with URL synchronization and presets using nuqs",
-  "dependencies": [
-    "nuqs@^2.2.2",
-    "date-fns@^4.1.0"
-  ],
+  "dependencies": ["nuqs@^2.2.2", "date-fns@^4.1.0"],
   "files": [
     {
       "path": "registry/default/types/index.ts",
@@ -54,7 +51,7 @@
     },
     {
       "path": "registry/default/date-range/presets.ts",
-      "content": "import { addDays, endOfDay, endOfMonth, startOfDay, startOfMonth } from '../utils/date'\n\nexport function getTodayRange(): [Date, Date] {\n  const today = new Date()\n  return [startOfDay(today), endOfDay(today)]\n}\n\nexport function getYesterdayRange(): [Date, Date] {\n  const yesterday = addDays(new Date(), -1)\n  return [startOfDay(yesterday), endOfDay(yesterday)]\n}\n\nexport function getLast7DaysRange(): [Date, Date] {\n  const end = new Date()\n  const start = addDays(end, -6)\n  return [startOfDay(start), endOfDay(end)]\n}\n\nexport function getLast30DaysRange(): [Date, Date] {\n  const end = new Date()\n  const start = addDays(end, -29)\n  return [startOfDay(start), endOfDay(end)]\n}\n\nexport function getThisMonthRange(): [Date, Date] {\n  const today = new Date()\n  return [startOfMonth(today), endOfMonth(today)]\n}\n\nexport function getLastMonthRange(): [Date, Date] {\n  const today = new Date()\n  const lastMonth = new Date(today.getFullYear(), today.getMonth() - 1, 1)\n  return [startOfMonth(lastMonth), endOfMonth(lastMonth)]\n}\n",
+      "content": "import { addDays, endOfDay, endOfMonth, startOfDay, startOfMonth } from '../../lib/utils/date'\n\nexport function getTodayRange(): [Date, Date] {\n  const today = new Date()\n  return [startOfDay(today), endOfDay(today)]\n}\n\nexport function getYesterdayRange(): [Date, Date] {\n  const yesterday = addDays(new Date(), -1)\n  return [startOfDay(yesterday), endOfDay(yesterday)]\n}\n\nexport function getLast7DaysRange(): [Date, Date] {\n  const end = new Date()\n  const start = addDays(end, -6)\n  return [startOfDay(start), endOfDay(end)]\n}\n\nexport function getLast30DaysRange(): [Date, Date] {\n  const end = new Date()\n  const start = addDays(end, -29)\n  return [startOfDay(start), endOfDay(end)]\n}\n\nexport function getThisMonthRange(): [Date, Date] {\n  const today = new Date()\n  return [startOfMonth(today), endOfMonth(today)]\n}\n\nexport function getLastMonthRange(): [Date, Date] {\n  const today = new Date()\n  const lastMonth = new Date(today.getFullYear(), today.getMonth() - 1, 1)\n  return [startOfMonth(lastMonth), endOfMonth(lastMonth)]\n}\n",
       "type": "registry:hook",
       "target": "hooks/date-range/presets.ts"
     }
