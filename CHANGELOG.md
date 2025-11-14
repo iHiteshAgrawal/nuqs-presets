@@ -78,7 +78,6 @@ First stable release of nuqs-presets - a collection of high-level pattern hooks 
 - TypeScript examples and best practices
 
 ### 🔧 Developer Tools
-- Changesets for version management
 - Biome for linting and formatting
 - Vitest for testing
 - Size-limit for bundle size monitoring

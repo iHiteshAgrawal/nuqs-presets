@@ -392,7 +392,7 @@ const { filters } = useFilters({
 
 ## Contributing
 
-Contributions are welcome! Please read our [Contributing Guide](.github/CONTRIBUTING.md) first.
+Contributions are welcome! Please read our [Contributing Guide](./CONTRIBUTING.md) first.
 
 ## License
 
