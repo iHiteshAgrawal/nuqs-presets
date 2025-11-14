@@ -1,0 +1,43 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "use-tabs",
+  "type": "registry:hook",
+  "title": "Tabs Hook",
+  "author": "Hitesh Agrawal",
+  "description": "Type-safe tabs state management with URL synchronization using nuqs",
+  "dependencies": [
+    "nuqs@^2.2.2"
+  ],
+  "files": [
+    {
+      "path": "registry/default/types/index.ts",
+      "content": "export * from './common'\n",
+      "type": "registry:lib",
+      "target": "hooks/types/index.ts"
+    },
+    {
+      "path": "registry/default/types/common.ts",
+      "content": "export type HistoryMode = 'push' | 'replace'\n\nexport interface BaseHookOptions {\n  history?: HistoryMode\n  scroll?: boolean\n  shallow?: boolean\n}\n\nexport interface UseTransitionOptions {\n  startTransition?: (callback: () => void) => void\n}\n",
+      "type": "registry:lib",
+      "target": "hooks/types/common.ts"
+    },
+    {
+      "path": "registry/default/tabs/index.ts",
+      "content": "export type { UseTabsOptions, UseTabsResult } from './types'\nexport { useTabs } from './useTabs'\n",
+      "type": "registry:hook",
+      "target": "hooks/tabs/index.ts"
+    },
+    {
+      "path": "registry/default/tabs/types.ts",
+      "content": "import type { BaseHookOptions } from '../types'\n\nexport interface UseTabsOptions<TTabs extends readonly string[] = readonly string[]>\n  extends BaseHookOptions {\n  defaultTab?: TTabs[number]\n  tabKey?: string\n}\n\nexport interface UseTabsResult<TTab = string> {\n  activeTab: TTab\n  tabs: readonly TTab[]\n  activeIndex: number\n  setTab: (tab: TTab) => void\n  setTabByIndex: (index: number) => void\n  nextTab: () => void\n  prevTab: () => void\n  isActive: (tab: TTab) => boolean\n  getTabIndex: (tab: TTab) => number\n  isPending: boolean\n}\n",
+      "type": "registry:hook",
+      "target": "hooks/tabs/types.ts"
+    },
+    {
+      "path": "registry/default/tabs/useTabs.ts",
+      "content": "import { parseAsStringLiteral, useQueryState } from 'nuqs'\nimport { useCallback, useMemo } from 'react'\nimport type { UseTabsOptions, UseTabsResult } from './types'\n\nexport function useTabs<TTabs extends readonly string[]>(\n  tabs: TTabs,\n  options: UseTabsOptions<TTabs> = {}\n): UseTabsResult<TTabs[number]> {\n  const {\n    defaultTab = tabs[0],\n    tabKey = 'tab',\n    history = 'replace',\n    scroll = false,\n    shallow = true,\n  } = options\n\n  const [activeTab, setActiveTab] = useQueryState(\n    tabKey,\n    parseAsStringLiteral(tabs as unknown as string[])\n      .withDefault(defaultTab as string)\n      .withOptions({\n        history,\n        scroll,\n        shallow,\n      })\n  )\n\n  const activeIndex = useMemo(() => tabs.indexOf(activeTab as TTabs[number]), [tabs, activeTab])\n\n  const setTab = useCallback(\n    (tab: TTabs[number]) => {\n      setActiveTab(tab as string)\n    },\n    [setActiveTab]\n  )\n\n  const setTabByIndex = useCallback(\n    (index: number) => {\n      if (index >= 0 && index < tabs.length) {\n        setActiveTab(tabs[index] as string)\n      }\n    },\n    [setActiveTab, tabs]\n  )\n\n  const nextTab = useCallback(() => {\n    const nextIndex = (activeIndex + 1) % tabs.length\n    setTabByIndex(nextIndex)\n  }, [activeIndex, tabs.length, setTabByIndex])\n\n  const prevTab = useCallback(() => {\n    const prevIndex = (activeIndex - 1 + tabs.length) % tabs.length\n    setTabByIndex(prevIndex)\n  }, [activeIndex, tabs.length, setTabByIndex])\n\n  const isActive = useCallback(\n    (tab: TTabs[number]): boolean => {\n      return activeTab === tab\n    },\n    [activeTab]\n  )\n\n  const getTabIndex = useCallback(\n    (tab: TTabs[number]): number => {\n      return tabs.indexOf(tab)\n    },\n    [tabs]\n  )\n\n  return {\n    activeTab: activeTab as TTabs[number],\n    tabs,\n    activeIndex,\n    setTab,\n    setTabByIndex,\n    nextTab,\n    prevTab,\n    isActive,\n    getTabIndex,\n    isPending: false,\n  }\n}\n",
+      "type": "registry:hook",
+      "target": "hooks/tabs/useTabs.ts"
+    }
+  ]
+}

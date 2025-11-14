@@ -1,0 +1,49 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "use-multi-select",
+  "type": "registry:hook",
+  "title": "Multi-Select Hook",
+  "author": "Hitesh Agrawal",
+  "description": "Type-safe multi-select state management with URL synchronization using nuqs",
+  "dependencies": [
+    "nuqs@^2.2.2"
+  ],
+  "files": [
+    {
+      "path": "registry/default/types/index.ts",
+      "content": "export * from './common'\n",
+      "type": "registry:lib",
+      "target": "hooks/types/index.ts"
+    },
+    {
+      "path": "registry/default/types/common.ts",
+      "content": "export type HistoryMode = 'push' | 'replace'\n\nexport interface BaseHookOptions {\n  history?: HistoryMode\n  scroll?: boolean\n  shallow?: boolean\n}\n\nexport interface UseTransitionOptions {\n  startTransition?: (callback: () => void) => void\n}\n",
+      "type": "registry:lib",
+      "target": "hooks/types/common.ts"
+    },
+    {
+      "path": "registry/default/multi-select/index.ts",
+      "content": "export type { UseMultiSelectOptions, UseMultiSelectResult } from './types'\nexport { useMultiSelect } from './useMultiSelect'\n",
+      "type": "registry:hook",
+      "target": "hooks/multi-select/index.ts"
+    },
+    {
+      "path": "registry/default/multi-select/types.ts",
+      "content": "import type { BaseHookOptions } from '../types'\n\nexport interface UseMultiSelectOptions extends BaseHookOptions {\n  defaultSelected?: string[]\n  allItems?: string[]\n  key?: string\n  separator?: string\n  maxSelection?: number\n  clearOnDefault?: boolean\n}\n\nexport interface UseMultiSelectResult {\n  selected: string[]\n  count: number\n  isEmpty: boolean\n  isAllSelected: boolean\n  select: (id: string) => void\n  deselect: (id: string) => void\n  toggle: (id: string) => void\n  selectAll: () => void\n  deselectAll: () => void\n  setSelected: (ids: string[]) => void\n  isSelected: (id: string) => boolean\n  isPending: boolean\n}\n",
+      "type": "registry:hook",
+      "target": "hooks/multi-select/types.ts"
+    },
+    {
+      "path": "registry/default/multi-select/useMultiSelect.ts",
+      "content": "import { parseAsString, useQueryState } from 'nuqs'\nimport { useCallback, useMemo } from 'react'\nimport type { UseMultiSelectOptions, UseMultiSelectResult } from './types'\nimport { addItem, parseSelection, removeItem, serializeSelection } from './utils'\n\nexport function useMultiSelect(options: UseMultiSelectOptions = {}): UseMultiSelectResult {\n  const {\n    defaultSelected = [],\n    allItems = [],\n    key = 'selected',\n    separator = ',',\n    maxSelection,\n    history = 'replace',\n    scroll = false,\n    shallow = true,\n  } = options\n\n  const [rawValue, setRawValue] = useQueryState(\n    key,\n    parseAsString.withDefault(serializeSelection(defaultSelected, separator) ?? '').withOptions({\n      history,\n      scroll,\n      shallow,\n    })\n  )\n\n  const selected = useMemo(() => parseSelection(rawValue, separator), [rawValue, separator])\n\n  const count = selected.length\n  const isEmpty = count === 0\n  const isAllSelected = useMemo(\n    () => allItems.length > 0 && allItems.every((item) => selected.includes(item)),\n    [allItems, selected]\n  )\n\n  const setSelected = useCallback(\n    (ids: string[]) => {\n      const limitedIds = maxSelection !== undefined ? ids.slice(0, maxSelection) : ids\n      setRawValue(serializeSelection(limitedIds, separator))\n    },\n    [setRawValue, separator, maxSelection]\n  )\n\n  const select = useCallback(\n    (id: string) => {\n      const newSelection = addItem(selected, id, maxSelection)\n      setRawValue(serializeSelection(newSelection, separator))\n    },\n    [selected, setRawValue, separator, maxSelection]\n  )\n\n  const deselect = useCallback(\n    (id: string) => {\n      const newSelection = removeItem(selected, id)\n      setRawValue(serializeSelection(newSelection, separator))\n    },\n    [selected, setRawValue, separator]\n  )\n\n  const toggle = useCallback(\n    (id: string) => {\n      if (selected.includes(id)) {\n        deselect(id)\n      } else if (maxSelection === undefined || selected.length < maxSelection) {\n        select(id)\n      }\n    },\n    [selected, select, deselect, maxSelection]\n  )\n\n  const selectAll = useCallback(() => {\n    const itemsToSelect = maxSelection !== undefined ? allItems.slice(0, maxSelection) : allItems\n    setRawValue(serializeSelection(itemsToSelect, separator))\n  }, [allItems, setRawValue, separator, maxSelection])\n\n  const deselectAll = useCallback(() => {\n    setRawValue(null)\n  }, [setRawValue])\n\n  const isSelected = useCallback(\n    (id: string): boolean => {\n      return selected.includes(id)\n    },\n    [selected]\n  )\n\n  return {\n    selected,\n    count,\n    isEmpty,\n    isAllSelected,\n    select,\n    deselect,\n    toggle,\n    selectAll,\n    deselectAll,\n    setSelected,\n    isSelected,\n    isPending: false,\n  }\n}\n",
+      "type": "registry:hook",
+      "target": "hooks/multi-select/useMultiSelect.ts"
+    },
+    {
+      "path": "registry/default/multi-select/utils.ts",
+      "content": "export function parseSelection(value: string | null, separator: string): string[] {\n  if (!value) return []\n  return value.split(separator).filter((item) => item.trim() !== '')\n}\n\nexport function serializeSelection(items: string[], separator: string): string | null {\n  if (items.length === 0) return null\n  return items.join(separator)\n}\n\nexport function toggleItem(items: string[], item: string): string[] {\n  const index = items.indexOf(item)\n  if (index === -1) {\n    return [...items, item]\n  }\n  return items.filter((i) => i !== item)\n}\n\nexport function addItem(items: string[], item: string, maxSelection?: number): string[] {\n  if (items.includes(item)) return items\n\n  if (maxSelection !== undefined && items.length >= maxSelection) {\n    return items\n  }\n\n  return [...items, item]\n}\n\nexport function removeItem(items: string[], item: string): string[] {\n  return items.filter((i) => i !== item)\n}\n",
+      "type": "registry:hook",
+      "target": "hooks/multi-select/utils.ts"
+    }
+  ]
+}

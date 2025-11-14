@@ -1,0 +1,49 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "use-sorting",
+  "type": "registry:hook",
+  "title": "Sorting Hook",
+  "author": "Hitesh Agrawal",
+  "description": "Type-safe sorting state management with URL synchronization using nuqs",
+  "dependencies": [
+    "nuqs@^2.2.2"
+  ],
+  "files": [
+    {
+      "path": "registry/default/types/index.ts",
+      "content": "export * from './common'\n",
+      "type": "registry:lib",
+      "target": "hooks/types/index.ts"
+    },
+    {
+      "path": "registry/default/types/common.ts",
+      "content": "export type HistoryMode = 'push' | 'replace'\n\nexport interface BaseHookOptions {\n  history?: HistoryMode\n  scroll?: boolean\n  shallow?: boolean\n}\n\nexport interface UseTransitionOptions {\n  startTransition?: (callback: () => void) => void\n}\n",
+      "type": "registry:lib",
+      "target": "hooks/types/common.ts"
+    },
+    {
+      "path": "registry/default/sorting/index.ts",
+      "content": "export type { SortOrder, UseSortingOptions, UseSortingResult } from './types'\nexport { useSorting } from './useSorting'\n",
+      "type": "registry:hook",
+      "target": "hooks/sorting/index.ts"
+    },
+    {
+      "path": "registry/default/sorting/types.ts",
+      "content": "import type { BaseHookOptions } from '../types'\n\nexport type SortOrder = 'asc' | 'desc'\n\nexport interface UseSortingOptions<TColumns extends readonly string[] = readonly string[]>\n  extends BaseHookOptions {\n  columns?: TColumns\n  defaultColumn?: TColumns[number]\n  defaultOrder?: SortOrder\n  sortByKey?: string\n  sortOrderKey?: string\n  clearOnDefault?: boolean\n  multiColumn?: boolean\n}\n\nexport interface UseSortingResult<TColumn = string> {\n  sortBy: TColumn | null\n  sortOrder: SortOrder | null\n  isSorted: boolean\n  setSort: (column: TColumn, order?: SortOrder) => void\n  toggleSort: (column: TColumn) => void\n  clearSort: () => void\n  getSortDirection: (column: TColumn) => SortOrder | null\n  getSortIndicator: (column: TColumn) => '↑' | '↓' | ''\n  isSortedBy: (column: TColumn) => boolean\n  isPending: boolean\n}\n",
+      "type": "registry:hook",
+      "target": "hooks/sorting/types.ts"
+    },
+    {
+      "path": "registry/default/sorting/useSorting.ts",
+      "content": "import { parseAsStringLiteral, useQueryStates } from 'nuqs'\nimport { useCallback } from 'react'\nimport type { SortOrder, UseSortingOptions, UseSortingResult } from './types'\nimport { getSortIndicator as getIndicator, getNextSortOrder } from './utils'\n\nexport function useSorting<TColumns extends readonly string[]>(\n  options: UseSortingOptions<TColumns> = {}\n): UseSortingResult<TColumns[number]> {\n  const {\n    columns = [] as unknown as TColumns,\n    defaultColumn,\n    defaultOrder,\n    sortByKey = 'sortBy',\n    sortOrderKey = 'order',\n    history = 'replace',\n    scroll = false,\n    shallow = true,\n  } = options\n\n  const [state, setState] = useQueryStates(\n    {\n      [sortByKey]: parseAsStringLiteral(columns as unknown as string[]),\n      [sortOrderKey]: parseAsStringLiteral(['asc', 'desc'] as const),\n    },\n    {\n      history,\n      scroll,\n      shallow,\n    }\n  )\n\n  const sortBy =\n    (state[sortByKey] as TColumns[number]) ?? (defaultColumn as TColumns[number]) ?? null\n  const sortOrder = (state[sortOrderKey] as SortOrder) ?? defaultOrder ?? null\n\n  const isSorted = sortBy !== null && sortOrder !== null\n\n  const setSort = useCallback(\n    (column: TColumns[number], order: SortOrder = 'asc') => {\n      setState({\n        [sortByKey]: column as string,\n        [sortOrderKey]: order,\n      })\n    },\n    [setState, sortByKey, sortOrderKey]\n  )\n\n  const toggleSort = useCallback(\n    (column: TColumns[number]) => {\n      const next = getNextSortOrder(sortBy as string | null, column as string, sortOrder)\n      setState({\n        [sortByKey]: next.column,\n        [sortOrderKey]: next.order,\n      })\n    },\n    [setState, sortBy, sortOrder, sortByKey, sortOrderKey]\n  )\n\n  const clearSort = useCallback(() => {\n    setState({\n      [sortByKey]: null,\n      [sortOrderKey]: null,\n    })\n  }, [setState, sortByKey, sortOrderKey])\n\n  const getSortDirection = useCallback(\n    (column: TColumns[number]): SortOrder | null => {\n      if (sortBy === column) return sortOrder\n      return null\n    },\n    [sortBy, sortOrder]\n  )\n\n  const getSortIndicator = useCallback(\n    (column: TColumns[number]): '↑' | '↓' | '' => {\n      const direction = getSortDirection(column)\n      return getIndicator(direction)\n    },\n    [getSortDirection]\n  )\n\n  const isSortedBy = useCallback(\n    (column: TColumns[number]): boolean => {\n      return sortBy === column\n    },\n    [sortBy]\n  )\n\n  return {\n    sortBy,\n    sortOrder,\n    isSorted,\n    setSort,\n    toggleSort,\n    clearSort,\n    getSortDirection,\n    getSortIndicator,\n    isSortedBy,\n    isPending: false,\n  }\n}\n",
+      "type": "registry:hook",
+      "target": "hooks/sorting/useSorting.ts"
+    },
+    {
+      "path": "registry/default/sorting/utils.ts",
+      "content": "import type { SortOrder } from './types'\n\nexport function getNextSortOrder(\n  currentColumn: string | null,\n  targetColumn: string,\n  currentOrder: SortOrder | null\n): { column: string | null; order: SortOrder | null } {\n  if (currentColumn !== targetColumn) {\n    return { column: targetColumn, order: 'asc' }\n  }\n\n  if (currentOrder === 'asc') {\n    return { column: targetColumn, order: 'desc' }\n  }\n\n  return { column: targetColumn, order: 'asc' }\n}\n\nexport function getSortIndicator(order: SortOrder | null): '↑' | '↓' | '' {\n  if (order === 'asc') return '↑'\n  if (order === 'desc') return '↓'\n  return ''\n}\n",
+      "type": "registry:hook",
+      "target": "hooks/sorting/utils.ts"
+    }
+  ]
+}

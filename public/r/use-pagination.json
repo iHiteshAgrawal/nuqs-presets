@@ -1,0 +1,55 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "use-pagination",
+  "type": "registry:hook",
+  "title": "Pagination Hook",
+  "author": "Hitesh Agrawal",
+  "description": "Type-safe pagination state management with URL synchronization using nuqs",
+  "dependencies": [
+    "nuqs@^2.2.2"
+  ],
+  "files": [
+    {
+      "path": "registry/default/types/index.ts",
+      "content": "export * from './common'\n",
+      "type": "registry:lib",
+      "target": "hooks/types/index.ts"
+    },
+    {
+      "path": "registry/default/types/common.ts",
+      "content": "export type HistoryMode = 'push' | 'replace'\n\nexport interface BaseHookOptions {\n  history?: HistoryMode\n  scroll?: boolean\n  shallow?: boolean\n}\n\nexport interface UseTransitionOptions {\n  startTransition?: (callback: () => void) => void\n}\n",
+      "type": "registry:lib",
+      "target": "hooks/types/common.ts"
+    },
+    {
+      "path": "registry/default/utils/validation.ts",
+      "content": "export function clamp(value: number, min: number, max: number): number {\n  return Math.min(Math.max(value, min), max)\n}\n\nexport function isValidNumber(value: unknown): value is number {\n  return typeof value === 'number' && !Number.isNaN(value) && Number.isFinite(value)\n}\n\nexport function isValidDate(date: unknown): date is Date {\n  return date instanceof Date && !Number.isNaN(date.getTime())\n}\n",
+      "type": "registry:lib",
+      "target": "lib/utils/validation.ts"
+    },
+    {
+      "path": "registry/default/pagination/index.ts",
+      "content": "export type { UsePaginationOptions, UsePaginationResult } from './types'\nexport { usePagination } from './usePagination'\n",
+      "type": "registry:hook",
+      "target": "hooks/pagination/index.ts"
+    },
+    {
+      "path": "registry/default/pagination/types.ts",
+      "content": "import type { BaseHookOptions } from '../types'\n\nexport interface UsePaginationOptions extends BaseHookOptions {\n  defaultPage?: number\n  defaultPageSize?: number\n  pageSizeOptions?: number[]\n  totalItems?: number\n  pageKey?: string\n  pageSizeKey?: string\n  resetPageOnSizeChange?: boolean\n}\n\nexport interface UsePaginationResult {\n  page: number\n  pageSize: number\n  totalPages: number | undefined\n  offset: number\n  hasNextPage: boolean\n  hasPrevPage: boolean\n  isFirstPage: boolean\n  isLastPage: boolean\n  setPage: (page: number) => void\n  setPageSize: (size: number) => void\n  setTotalItems: (total: number) => void\n  nextPage: () => void\n  prevPage: () => void\n  firstPage: () => void\n  lastPage: () => void\n  goToPage: (page: number) => void\n  getPageNumbers: () => number[]\n  isPending: boolean\n}\n",
+      "type": "registry:hook",
+      "target": "hooks/pagination/types.ts"
+    },
+    {
+      "path": "registry/default/pagination/utils.ts",
+      "content": "import { clamp } from '../../lib/utils/validation'\n\nexport function calculateTotalPages(totalItems: number, pageSize: number): number {\n  if (totalItems <= 0 || pageSize <= 0) return 1\n  return Math.ceil(totalItems / pageSize)\n}\n\nexport function calculateOffset(page: number, pageSize: number): number {\n  return (page - 1) * pageSize\n}\n\nexport function normalizePage(page: number, totalPages?: number): number {\n  if (totalPages !== undefined) {\n    return clamp(page, 1, Math.max(1, totalPages))\n  }\n  return Math.max(1, page)\n}\n\nexport function getPageNumbers(currentPage: number, totalPages: number, maxVisible = 7): number[] {\n  if (totalPages <= maxVisible) {\n    return Array.from({ length: totalPages }, (_, i) => i + 1)\n  }\n\n  const halfVisible = Math.floor(maxVisible / 2)\n  let start = currentPage - halfVisible\n  let end = currentPage + halfVisible\n\n  if (start < 1) {\n    end += 1 - start\n    start = 1\n  }\n\n  if (end > totalPages) {\n    start -= end - totalPages\n    end = totalPages\n  }\n\n  start = Math.max(1, start)\n  end = Math.min(totalPages, end)\n\n  return Array.from({ length: end - start + 1 }, (_, i) => start + i)\n}\n",
+      "type": "registry:hook",
+      "target": "hooks/pagination/utils.ts"
+    },
+    {
+      "path": "registry/default/pagination/usePagination.ts",
+      "content": "import { parseAsInteger, useQueryStates } from 'nuqs'\nimport { useCallback, useMemo, useState } from 'react'\nimport type { UsePaginationOptions, UsePaginationResult } from './types'\nimport { calculateOffset, calculateTotalPages, getPageNumbers, normalizePage } from './utils'\n\nexport function usePagination(options: UsePaginationOptions = {}): UsePaginationResult {\n  const {\n    defaultPage = 1,\n    defaultPageSize = 10,\n    totalItems: initialTotalItems,\n    pageKey = 'page',\n    pageSizeKey = 'pageSize',\n    resetPageOnSizeChange = true,\n    history = 'replace',\n    scroll = false,\n    shallow = true,\n  } = options\n\n  const [totalItems, setTotalItems] = useState(initialTotalItems)\n\n  const [state, setState] = useQueryStates(\n    {\n      [pageKey]: parseAsInteger.withDefault(defaultPage),\n      [pageSizeKey]: parseAsInteger.withDefault(defaultPageSize),\n    },\n    {\n      history,\n      scroll,\n      shallow,\n    }\n  )\n\n  const page = state[pageKey] ?? defaultPage\n  const pageSize = state[pageSizeKey] ?? defaultPageSize\n\n  const totalPages = useMemo(\n    () => (totalItems !== undefined ? calculateTotalPages(totalItems, pageSize) : undefined),\n    [totalItems, pageSize]\n  )\n\n  const normalizedPage = useMemo(() => normalizePage(page, totalPages), [page, totalPages])\n\n  const offset = useMemo(\n    () => calculateOffset(normalizedPage, pageSize),\n    [normalizedPage, pageSize]\n  )\n\n  const hasPrevPage = normalizedPage > 1\n  const hasNextPage = totalPages !== undefined ? normalizedPage < totalPages : true\n  const isFirstPage = normalizedPage === 1\n  const isLastPage = totalPages !== undefined ? normalizedPage === totalPages : false\n\n  const setPage = useCallback(\n    (newPage: number) => {\n      const validPage = normalizePage(newPage, totalPages)\n      setState({ [pageKey]: validPage })\n    },\n    [setState, totalPages, pageKey]\n  )\n\n  const setPageSize = useCallback(\n    (newSize: number) => {\n      const validSize = Math.max(1, newSize)\n      const updates: Record<string, number> = { [pageSizeKey]: validSize }\n\n      if (resetPageOnSizeChange) {\n        updates[pageKey] = 1\n      }\n\n      setState(updates)\n    },\n    [setState, resetPageOnSizeChange, pageKey, pageSizeKey]\n  )\n\n  const nextPage = useCallback(() => {\n    if (hasNextPage) {\n      setPage(normalizedPage + 1)\n    }\n  }, [hasNextPage, normalizedPage, setPage])\n\n  const prevPage = useCallback(() => {\n    if (hasPrevPage) {\n      setPage(normalizedPage - 1)\n    }\n  }, [hasPrevPage, normalizedPage, setPage])\n\n  const firstPage = useCallback(() => {\n    setPage(1)\n  }, [setPage])\n\n  const lastPage = useCallback(() => {\n    if (totalPages !== undefined) {\n      setPage(totalPages)\n    }\n  }, [totalPages, setPage])\n\n  const goToPage = useCallback(\n    (targetPage: number) => {\n      setPage(targetPage)\n    },\n    [setPage]\n  )\n\n  const getPageNumbersCallback = useCallback(() => {\n    if (totalPages === undefined) return []\n    return getPageNumbers(normalizedPage, totalPages)\n  }, [normalizedPage, totalPages])\n\n  return {\n    page: normalizedPage,\n    pageSize,\n    totalPages,\n    offset,\n    hasNextPage,\n    hasPrevPage,\n    isFirstPage,\n    isLastPage,\n    setPage,\n    setPageSize,\n    setTotalItems,\n    nextPage,\n    prevPage,\n    firstPage,\n    lastPage,\n    goToPage,\n    getPageNumbers: getPageNumbersCallback,\n    isPending: false,\n  }\n}\n",
+      "type": "registry:hook",
+      "target": "hooks/pagination/usePagination.ts"
+    }
+  ]
+}

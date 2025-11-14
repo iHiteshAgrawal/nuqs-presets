@@ -1,0 +1,297 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "name": "nuqs-presets",
+  "homepage": "https://github.com/iHiteshAgrawal/nuqs-presets",
+  "items": [
+    {
+      "name": "use-pagination",
+      "type": "registry:hook",
+      "title": "Pagination Hook",
+      "description": "Type-safe pagination state management with URL synchronization using nuqs",
+      "author": "Hitesh Agrawal",
+      "dependencies": ["nuqs@^2.2.2"],
+      "files": [
+        {
+          "path": "registry/default/types/index.ts",
+          "type": "registry:lib",
+          "target": "hooks/types/index.ts"
+        },
+        {
+          "path": "registry/default/types/common.ts",
+          "type": "registry:lib",
+          "target": "hooks/types/common.ts"
+        },
+        {
+          "path": "registry/default/utils/validation.ts",
+          "type": "registry:lib",
+          "target": "lib/utils/validation.ts"
+        },
+        {
+          "path": "registry/default/pagination/index.ts",
+          "type": "registry:hook",
+          "target": "hooks/pagination/index.ts"
+        },
+        {
+          "path": "registry/default/pagination/types.ts",
+          "type": "registry:hook",
+          "target": "hooks/pagination/types.ts"
+        },
+        {
+          "path": "registry/default/pagination/utils.ts",
+          "type": "registry:hook",
+          "target": "hooks/pagination/utils.ts"
+        },
+        {
+          "path": "registry/default/pagination/usePagination.ts",
+          "type": "registry:hook",
+          "target": "hooks/pagination/usePagination.ts"
+        }
+      ]
+    },
+    {
+      "name": "use-search",
+      "type": "registry:hook",
+      "title": "Search Hook",
+      "description": "Type-safe search state management with URL synchronization and debouncing using nuqs",
+      "author": "Hitesh Agrawal",
+      "dependencies": ["nuqs@^2.2.2"],
+      "files": [
+        {
+          "path": "registry/default/types/index.ts",
+          "type": "registry:lib",
+          "target": "hooks/types/index.ts"
+        },
+        {
+          "path": "registry/default/types/common.ts",
+          "type": "registry:lib",
+          "target": "hooks/types/common.ts"
+        },
+        {
+          "path": "registry/default/utils/debounce.ts",
+          "type": "registry:lib",
+          "target": "lib/utils/debounce.ts"
+        },
+        {
+          "path": "registry/default/search/index.ts",
+          "type": "registry:hook",
+          "target": "hooks/search/index.ts"
+        },
+        {
+          "path": "registry/default/search/types.ts",
+          "type": "registry:hook",
+          "target": "hooks/search/types.ts"
+        },
+        {
+          "path": "registry/default/search/useSearch.ts",
+          "type": "registry:hook",
+          "target": "hooks/search/useSearch.ts"
+        }
+      ]
+    },
+    {
+      "name": "use-sorting",
+      "type": "registry:hook",
+      "title": "Sorting Hook",
+      "description": "Type-safe sorting state management with URL synchronization using nuqs",
+      "author": "Hitesh Agrawal",
+      "dependencies": ["nuqs@^2.2.2"],
+      "files": [
+        {
+          "path": "registry/default/types/index.ts",
+          "type": "registry:lib",
+          "target": "hooks/types/index.ts"
+        },
+        {
+          "path": "registry/default/types/common.ts",
+          "type": "registry:lib",
+          "target": "hooks/types/common.ts"
+        },
+        {
+          "path": "registry/default/sorting/index.ts",
+          "type": "registry:hook",
+          "target": "hooks/sorting/index.ts"
+        },
+        {
+          "path": "registry/default/sorting/types.ts",
+          "type": "registry:hook",
+          "target": "hooks/sorting/types.ts"
+        },
+        {
+          "path": "registry/default/sorting/useSorting.ts",
+          "type": "registry:hook",
+          "target": "hooks/sorting/useSorting.ts"
+        },
+        {
+          "path": "registry/default/sorting/utils.ts",
+          "type": "registry:hook",
+          "target": "hooks/sorting/utils.ts"
+        }
+      ]
+    },
+    {
+      "name": "use-filters",
+      "type": "registry:hook",
+      "title": "Filters Hook",
+      "description": "Type-safe filtering state management with URL synchronization using nuqs",
+      "author": "Hitesh Agrawal",
+      "dependencies": ["nuqs@^2.2.2"],
+      "files": [
+        {
+          "path": "registry/default/types/index.ts",
+          "type": "registry:lib",
+          "target": "hooks/types/index.ts"
+        },
+        {
+          "path": "registry/default/types/common.ts",
+          "type": "registry:lib",
+          "target": "hooks/types/common.ts"
+        },
+        {
+          "path": "registry/default/filtering/index.ts",
+          "type": "registry:hook",
+          "target": "hooks/filtering/index.ts"
+        },
+        {
+          "path": "registry/default/filtering/types.ts",
+          "type": "registry:hook",
+          "target": "hooks/filtering/types.ts"
+        },
+        {
+          "path": "registry/default/filtering/useFilters.ts",
+          "type": "registry:hook",
+          "target": "hooks/filtering/useFilters.ts"
+        },
+        {
+          "path": "registry/default/filtering/utils.ts",
+          "type": "registry:hook",
+          "target": "hooks/filtering/utils.ts"
+        }
+      ]
+    },
+    {
+      "name": "use-multi-select",
+      "type": "registry:hook",
+      "title": "Multi-Select Hook",
+      "description": "Type-safe multi-select state management with URL synchronization using nuqs",
+      "author": "Hitesh Agrawal",
+      "dependencies": ["nuqs@^2.2.2"],
+      "files": [
+        {
+          "path": "registry/default/types/index.ts",
+          "type": "registry:lib",
+          "target": "hooks/types/index.ts"
+        },
+        {
+          "path": "registry/default/types/common.ts",
+          "type": "registry:lib",
+          "target": "hooks/types/common.ts"
+        },
+        {
+          "path": "registry/default/multi-select/index.ts",
+          "type": "registry:hook",
+          "target": "hooks/multi-select/index.ts"
+        },
+        {
+          "path": "registry/default/multi-select/types.ts",
+          "type": "registry:hook",
+          "target": "hooks/multi-select/types.ts"
+        },
+        {
+          "path": "registry/default/multi-select/useMultiSelect.ts",
+          "type": "registry:hook",
+          "target": "hooks/multi-select/useMultiSelect.ts"
+        },
+        {
+          "path": "registry/default/multi-select/utils.ts",
+          "type": "registry:hook",
+          "target": "hooks/multi-select/utils.ts"
+        }
+      ]
+    },
+    {
+      "name": "use-tabs",
+      "type": "registry:hook",
+      "title": "Tabs Hook",
+      "description": "Type-safe tabs state management with URL synchronization using nuqs",
+      "author": "Hitesh Agrawal",
+      "dependencies": ["nuqs@^2.2.2"],
+      "files": [
+        {
+          "path": "registry/default/types/index.ts",
+          "type": "registry:lib",
+          "target": "hooks/types/index.ts"
+        },
+        {
+          "path": "registry/default/types/common.ts",
+          "type": "registry:lib",
+          "target": "hooks/types/common.ts"
+        },
+        {
+          "path": "registry/default/tabs/index.ts",
+          "type": "registry:hook",
+          "target": "hooks/tabs/index.ts"
+        },
+        {
+          "path": "registry/default/tabs/types.ts",
+          "type": "registry:hook",
+          "target": "hooks/tabs/types.ts"
+        },
+        {
+          "path": "registry/default/tabs/useTabs.ts",
+          "type": "registry:hook",
+          "target": "hooks/tabs/useTabs.ts"
+        }
+      ]
+    },
+    {
+      "name": "use-date-range",
+      "type": "registry:hook",
+      "title": "Date Range Hook",
+      "description": "Type-safe date range state management with URL synchronization and presets using nuqs",
+      "author": "Hitesh Agrawal",
+      "dependencies": ["nuqs@^2.2.2", "date-fns@^4.1.0"],
+      "files": [
+        {
+          "path": "registry/default/types/index.ts",
+          "type": "registry:lib",
+          "target": "hooks/types/index.ts"
+        },
+        {
+          "path": "registry/default/types/common.ts",
+          "type": "registry:lib",
+          "target": "hooks/types/common.ts"
+        },
+        {
+          "path": "registry/default/utils/date.ts",
+          "type": "registry:lib",
+          "target": "lib/utils/date.ts"
+        },
+        {
+          "path": "registry/default/date-range/index.ts",
+          "type": "registry:hook",
+          "target": "hooks/date-range/index.ts"
+        },
+        {
+          "path": "registry/default/date-range/types.ts",
+          "type": "registry:hook",
+          "target": "hooks/date-range/types.ts"
+        },
+        {
+          "path": "registry/default/date-range/useDateRange.ts",
+          "type": "registry:hook",
+          "target": "hooks/date-range/useDateRange.ts"
+        },
+        {
+          "path": "registry/default/date-range/utils.ts",
+          "type": "registry:hook",
+          "target": "hooks/date-range/utils.ts"
+        },
+        {
+          "path": "registry/default/date-range/presets.ts",
+          "type": "registry:hook",
+          "target": "hooks/date-range/presets.ts"
+        }
+      ]
+    }
+  ]
+}

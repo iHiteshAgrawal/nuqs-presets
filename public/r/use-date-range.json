@@ -1,0 +1,62 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "use-date-range",
+  "type": "registry:hook",
+  "title": "Date Range Hook",
+  "author": "Hitesh Agrawal",
+  "description": "Type-safe date range state management with URL synchronization and presets using nuqs",
+  "dependencies": [
+    "nuqs@^2.2.2",
+    "date-fns@^4.1.0"
+  ],
+  "files": [
+    {
+      "path": "registry/default/types/index.ts",
+      "content": "export * from './common'\n",
+      "type": "registry:lib",
+      "target": "hooks/types/index.ts"
+    },
+    {
+      "path": "registry/default/types/common.ts",
+      "content": "export type HistoryMode = 'push' | 'replace'\n\nexport interface BaseHookOptions {\n  history?: HistoryMode\n  scroll?: boolean\n  shallow?: boolean\n}\n\nexport interface UseTransitionOptions {\n  startTransition?: (callback: () => void) => void\n}\n",
+      "type": "registry:lib",
+      "target": "hooks/types/common.ts"
+    },
+    {
+      "path": "registry/default/utils/date.ts",
+      "content": "export function startOfDay(date: Date): Date {\n  const newDate = new Date(date)\n  newDate.setHours(0, 0, 0, 0)\n  return newDate\n}\n\nexport function endOfDay(date: Date): Date {\n  const newDate = new Date(date)\n  newDate.setHours(23, 59, 59, 999)\n  return newDate\n}\n\nexport function addDays(date: Date, days: number): Date {\n  const result = new Date(date)\n  result.setDate(result.getDate() + days)\n  return result\n}\n\nexport function startOfMonth(date: Date): Date {\n  return new Date(date.getFullYear(), date.getMonth(), 1)\n}\n\nexport function endOfMonth(date: Date): Date {\n  return new Date(date.getFullYear(), date.getMonth() + 1, 0, 23, 59, 59, 999)\n}\n\nexport function daysBetween(start: Date, end: Date): number {\n  const msPerDay = 24 * 60 * 60 * 1000\n  return Math.round(Math.abs((end.getTime() - start.getTime()) / msPerDay))\n}\n",
+      "type": "registry:lib",
+      "target": "lib/utils/date.ts"
+    },
+    {
+      "path": "registry/default/date-range/index.ts",
+      "content": "export * from './presets'\nexport type { DateFormat, DatePreset, UseDateRangeOptions, UseDateRangeResult } from './types'\nexport { useDateRange } from './useDateRange'\n",
+      "type": "registry:hook",
+      "target": "hooks/date-range/index.ts"
+    },
+    {
+      "path": "registry/default/date-range/types.ts",
+      "content": "import type { BaseHookOptions } from '../types'\n\nexport type DatePreset =\n  | 'today'\n  | 'yesterday'\n  | 'last7days'\n  | 'last30days'\n  | 'thisMonth'\n  | 'lastMonth'\n  | 'custom'\n\nexport type DateFormat = 'iso' | 'timestamp'\n\nexport interface UseDateRangeOptions extends BaseHookOptions {\n  defaultPreset?: DatePreset\n  minDate?: Date\n  maxDate?: Date\n  maxDays?: number\n  startKey?: string\n  endKey?: string\n  presetKey?: string\n  format?: DateFormat\n}\n\nexport interface UseDateRangeResult {\n  startDate: Date | null\n  endDate: Date | null\n  preset: DatePreset\n  isValid: boolean\n  daysDifference: number\n  setStartDate: (date: Date | null) => void\n  setEndDate: (date: Date | null) => void\n  setRange: (start: Date, end: Date) => void\n  setPreset: (preset: DatePreset) => void\n  clearRange: () => void\n  presets: {\n    today: () => void\n    yesterday: () => void\n    last7days: () => void\n    last30days: () => void\n    thisMonth: () => void\n    lastMonth: () => void\n    custom: () => void\n  }\n  isPending: boolean\n}\n",
+      "type": "registry:hook",
+      "target": "hooks/date-range/types.ts"
+    },
+    {
+      "path": "registry/default/date-range/useDateRange.ts",
+      "content": "import { parseAsString, parseAsStringLiteral, useQueryStates } from 'nuqs'\nimport { useCallback, useMemo } from 'react'\nimport { daysBetween } from '../../lib/utils/date'\nimport {\n  getLast7DaysRange,\n  getLast30DaysRange,\n  getLastMonthRange,\n  getThisMonthRange,\n  getTodayRange,\n  getYesterdayRange,\n} from './presets'\nimport type { DatePreset, UseDateRangeOptions, UseDateRangeResult } from './types'\nimport { isValidRange, parseDate, serializeDate } from './utils'\n\nconst PRESETS = [\n  'today',\n  'yesterday',\n  'last7days',\n  'last30days',\n  'thisMonth',\n  'lastMonth',\n  'custom',\n] as const\n\nexport function useDateRange(options: UseDateRangeOptions = {}): UseDateRangeResult {\n  const {\n    defaultPreset = 'last7days',\n    minDate,\n    maxDate,\n    maxDays,\n    startKey = 'from',\n    endKey = 'to',\n    presetKey = 'range',\n    format = 'iso',\n    history = 'replace',\n    scroll = false,\n    shallow = true,\n  } = options\n\n  const [state, setState] = useQueryStates(\n    {\n      [startKey]: parseAsString,\n      [endKey]: parseAsString,\n      [presetKey]: parseAsStringLiteral(PRESETS).withDefault(defaultPreset),\n    },\n    {\n      history,\n      scroll,\n      shallow,\n    }\n  )\n\n  const startDate = useMemo(\n    () => parseDate(state[startKey] ?? null, format),\n    [state, startKey, format]\n  )\n\n  const endDate = useMemo(() => parseDate(state[endKey] ?? null, format), [state, endKey, format])\n\n  const preset = (state[presetKey] ?? defaultPreset) as DatePreset\n\n  const isValid = useMemo(\n    () => isValidRange(startDate, endDate, minDate, maxDate, maxDays),\n    [startDate, endDate, minDate, maxDate, maxDays]\n  )\n\n  const daysDifference = useMemo(() => {\n    if (!startDate || !endDate) return 0\n    return daysBetween(startDate, endDate)\n  }, [startDate, endDate])\n\n  const setStartDate = useCallback(\n    (date: Date | null) => {\n      setState({\n        [startKey]: serializeDate(date, format),\n        [presetKey]: 'custom',\n      })\n    },\n    [setState, startKey, presetKey, format]\n  )\n\n  const setEndDate = useCallback(\n    (date: Date | null) => {\n      setState({\n        [endKey]: serializeDate(date, format),\n        [presetKey]: 'custom',\n      })\n    },\n    [setState, endKey, presetKey, format]\n  )\n\n  const setRange = useCallback(\n    (start: Date, end: Date) => {\n      setState({\n        [startKey]: serializeDate(start, format),\n        [endKey]: serializeDate(end, format),\n        [presetKey]: 'custom',\n      })\n    },\n    [setState, startKey, endKey, presetKey, format]\n  )\n\n  const setPreset = useCallback(\n    (newPreset: DatePreset) => {\n      let range: [Date, Date] | null = null\n\n      switch (newPreset) {\n        case 'today':\n          range = getTodayRange()\n          break\n        case 'yesterday':\n          range = getYesterdayRange()\n          break\n        case 'last7days':\n          range = getLast7DaysRange()\n          break\n        case 'last30days':\n          range = getLast30DaysRange()\n          break\n        case 'thisMonth':\n          range = getThisMonthRange()\n          break\n        case 'lastMonth':\n          range = getLastMonthRange()\n          break\n        case 'custom':\n          setState({ [presetKey]: 'custom' })\n          return\n      }\n\n      if (range) {\n        setState({\n          [startKey]: serializeDate(range[0], format),\n          [endKey]: serializeDate(range[1], format),\n          [presetKey]: newPreset,\n        })\n      }\n    },\n    [setState, startKey, endKey, presetKey, format]\n  )\n\n  const clearRange = useCallback(() => {\n    setState({\n      [startKey]: null,\n      [endKey]: null,\n      [presetKey]: null,\n    })\n  }, [setState, startKey, endKey, presetKey])\n\n  const presets = useMemo(\n    () => ({\n      today: () => setPreset('today'),\n      yesterday: () => setPreset('yesterday'),\n      last7days: () => setPreset('last7days'),\n      last30days: () => setPreset('last30days'),\n      thisMonth: () => setPreset('thisMonth'),\n      lastMonth: () => setPreset('lastMonth'),\n      custom: () => setPreset('custom'),\n    }),\n    [setPreset]\n  )\n\n  return {\n    startDate,\n    endDate,\n    preset,\n    isValid,\n    daysDifference,\n    setStartDate,\n    setEndDate,\n    setRange,\n    setPreset,\n    clearRange,\n    presets,\n    isPending: false,\n  }\n}\n",
+      "type": "registry:hook",
+      "target": "hooks/date-range/useDateRange.ts"
+    },
+    {
+      "path": "registry/default/date-range/utils.ts",
+      "content": "import type { DateFormat } from './types'\n\nexport function parseDate(value: string | null, format: DateFormat): Date | null {\n  if (!value) return null\n\n  if (format === 'timestamp') {\n    const timestamp = Number(value)\n    if (Number.isNaN(timestamp)) return null\n    return new Date(timestamp)\n  }\n\n  const date = new Date(value)\n  return Number.isNaN(date.getTime()) ? null : date\n}\n\nexport function serializeDate(date: Date | null, format: DateFormat): string | null {\n  if (!date) return null\n\n  if (format === 'timestamp') {\n    return String(date.getTime())\n  }\n\n  return date.toISOString()\n}\n\nexport function isValidRange(\n  start: Date | null,\n  end: Date | null,\n  minDate?: Date,\n  maxDate?: Date,\n  maxDays?: number\n): boolean {\n  if (!start || !end) return false\n  if (start > end) return false\n  if (minDate && start < minDate) return false\n  if (maxDate && end > maxDate) return false\n\n  if (maxDays !== undefined) {\n    const daysDiff = Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24))\n    if (daysDiff > maxDays) return false\n  }\n\n  return true\n}\n",
+      "type": "registry:hook",
+      "target": "hooks/date-range/utils.ts"
+    },
+    {
+      "path": "registry/default/date-range/presets.ts",
+      "content": "import { addDays, endOfDay, endOfMonth, startOfDay, startOfMonth } from '../utils/date'\n\nexport function getTodayRange(): [Date, Date] {\n  const today = new Date()\n  return [startOfDay(today), endOfDay(today)]\n}\n\nexport function getYesterdayRange(): [Date, Date] {\n  const yesterday = addDays(new Date(), -1)\n  return [startOfDay(yesterday), endOfDay(yesterday)]\n}\n\nexport function getLast7DaysRange(): [Date, Date] {\n  const end = new Date()\n  const start = addDays(end, -6)\n  return [startOfDay(start), endOfDay(end)]\n}\n\nexport function getLast30DaysRange(): [Date, Date] {\n  const end = new Date()\n  const start = addDays(end, -29)\n  return [startOfDay(start), endOfDay(end)]\n}\n\nexport function getThisMonthRange(): [Date, Date] {\n  const today = new Date()\n  return [startOfMonth(today), endOfMonth(today)]\n}\n\nexport function getLastMonthRange(): [Date, Date] {\n  const today = new Date()\n  const lastMonth = new Date(today.getFullYear(), today.getMonth() - 1, 1)\n  return [startOfMonth(lastMonth), endOfMonth(lastMonth)]\n}\n",
+      "type": "registry:hook",
+      "target": "hooks/date-range/presets.ts"
+    }
+  ]
+}

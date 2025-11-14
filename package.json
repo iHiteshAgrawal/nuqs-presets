@@ -120,7 +120,9 @@
     "format": "biome format . --write",
     "size": "size-limit",
     "publint": "publint",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build",
+    "registry:build": "shadcn build",
+    "registry:dev": "shadcn build --watch"
   },
   "size-limit": [
     {
@@ -131,5 +133,8 @@
       "path": "dist/hooks/pagination/index.js",
       "limit": "2 kB"
     }
-  ]
+  ],
+  "dependencies": {
+    "shadcn": "3.5.0"
+  }
 }

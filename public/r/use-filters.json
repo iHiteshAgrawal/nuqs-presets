@@ -1,0 +1,49 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "use-filters",
+  "type": "registry:hook",
+  "title": "Filters Hook",
+  "author": "Hitesh Agrawal",
+  "description": "Type-safe filtering state management with URL synchronization using nuqs",
+  "dependencies": [
+    "nuqs@^2.2.2"
+  ],
+  "files": [
+    {
+      "path": "registry/default/types/index.ts",
+      "content": "export * from './common'\n",
+      "type": "registry:lib",
+      "target": "hooks/types/index.ts"
+    },
+    {
+      "path": "registry/default/types/common.ts",
+      "content": "export type HistoryMode = 'push' | 'replace'\n\nexport interface BaseHookOptions {\n  history?: HistoryMode\n  scroll?: boolean\n  shallow?: boolean\n}\n\nexport interface UseTransitionOptions {\n  startTransition?: (callback: () => void) => void\n}\n",
+      "type": "registry:lib",
+      "target": "hooks/types/common.ts"
+    },
+    {
+      "path": "registry/default/filtering/index.ts",
+      "content": "export type { UseFiltersOptions, UseFiltersResult, Values } from './types'\nexport { useFilters } from './useFilters'\n",
+      "type": "registry:hook",
+      "target": "hooks/filtering/index.ts"
+    },
+    {
+      "path": "registry/default/filtering/types.ts",
+      "content": "import type { Values } from 'nuqs'\nimport type { BaseHookOptions } from '../types'\n\n// biome-ignore lint/suspicious/noExplicitAny: parsers can be any nuqs parser type\nexport interface UseFiltersOptions<TParsers extends Record<string, any> = Record<string, any>>\n  extends BaseHookOptions {\n  parsers: TParsers\n  onChange?: (filters: Values<TParsers>) => void\n}\n\nexport interface UseFiltersResult<TFilters = Record<string, unknown>> {\n  filters: TFilters\n  hasFilters: boolean\n  activeCount: number\n  setFilter: <K extends keyof TFilters>(key: K, value: TFilters[K]) => void\n  setFilters: (filters: Partial<TFilters>) => void\n  removeFilter: (key: keyof TFilters) => void\n  clearFilters: () => void\n  toggleFilter: <K extends keyof TFilters>(key: K, value: TFilters[K]) => void\n  getFilterValues: (key: keyof TFilters) => unknown[]\n  isFilterActive: <K extends keyof TFilters>(key: K, value?: TFilters[K]) => boolean\n  isPending: boolean\n}\n\nexport type { Values }\n",
+      "type": "registry:hook",
+      "target": "hooks/filtering/types.ts"
+    },
+    {
+      "path": "registry/default/filtering/useFilters.ts",
+      "content": "import { useQueryStates } from 'nuqs'\nimport { useCallback, useMemo } from 'react'\nimport type { UseFiltersOptions, UseFiltersResult, Values } from './types'\nimport { countActiveFilters } from './utils'\n\n// biome-ignore lint/suspicious/noExplicitAny: parsers can be any nuqs parser type\nexport function useFilters<TParsers extends Record<string, any>>(\n  options: UseFiltersOptions<TParsers>\n): UseFiltersResult<Values<TParsers>> {\n  const { parsers, onChange, history = 'replace', scroll = false, shallow = true } = options\n\n  const [filters, setFiltersState] = useQueryStates(parsers, {\n    history,\n    scroll,\n    shallow,\n  })\n\n  const hasFilters = useMemo(() => countActiveFilters(filters) > 0, [filters])\n\n  const activeCount = useMemo(() => countActiveFilters(filters), [filters])\n\n  const setFilter = useCallback(\n    (key: keyof Values<TParsers>, value: unknown) => {\n      // biome-ignore lint/suspicious/noExplicitAny: dynamic filter updates\n      setFiltersState({ [key]: value === undefined ? null : value } as any)\n\n      if (onChange) {\n        const newFilters = { ...filters, [key]: value } as Values<TParsers>\n        onChange(newFilters)\n      }\n    },\n    [setFiltersState, filters, onChange]\n  )\n\n  const setFilters = useCallback(\n    (newFilters: Partial<Values<TParsers>>) => {\n      const updates: Record<string, unknown> = {}\n      for (const [key, value] of Object.entries(newFilters)) {\n        updates[key] = value === undefined ? null : value\n      }\n      // biome-ignore lint/suspicious/noExplicitAny: dynamic filter updates\n      setFiltersState(updates as any)\n\n      if (onChange) {\n        const merged = { ...filters, ...newFilters } as Values<TParsers>\n        onChange(merged)\n      }\n    },\n    [setFiltersState, filters, onChange]\n  )\n\n  const removeFilter = useCallback(\n    (key: keyof Values<TParsers>) => {\n      // biome-ignore lint/suspicious/noExplicitAny: dynamic filter updates\n      setFiltersState({ [key]: null } as any)\n\n      if (onChange) {\n        const newFilters = { ...filters } as Values<TParsers>\n        delete newFilters[key as keyof typeof newFilters]\n        onChange(newFilters)\n      }\n    },\n    [setFiltersState, filters, onChange]\n  )\n\n  const clearFilters = useCallback(() => {\n    const updates: Record<string, null> = {}\n    for (const key of Object.keys(filters)) {\n      updates[key] = null\n    }\n    // biome-ignore lint/suspicious/noExplicitAny: dynamic filter updates\n    setFiltersState(updates as any)\n\n    if (onChange) {\n      onChange({} as Values<TParsers>)\n    }\n  }, [setFiltersState, filters, onChange])\n\n  const toggleFilter = useCallback(\n    (key: keyof Values<TParsers>, value: unknown) => {\n      const currentValue = filters[key]\n      if (currentValue === value) {\n        removeFilter(key)\n      } else {\n        setFilter(key, value)\n      }\n    },\n    [filters, setFilter, removeFilter]\n  )\n\n  const getFilterValues = useCallback(\n    (key: keyof Values<TParsers>): unknown[] => {\n      const value = filters[key]\n      if (Array.isArray(value)) return value\n      if (value !== undefined && value !== null) return [value]\n      return []\n    },\n    [filters]\n  )\n\n  const isFilterActive = useCallback(\n    (key: keyof Values<TParsers>, value?: unknown): boolean => {\n      const currentValue = filters[key]\n      if (value !== undefined) {\n        if (Array.isArray(currentValue)) {\n          return currentValue.includes(value)\n        }\n        return currentValue === value\n      }\n      return currentValue !== undefined && currentValue !== null\n    },\n    [filters]\n  )\n\n  return {\n    filters: filters as Values<TParsers>,\n    hasFilters,\n    activeCount,\n    setFilter: setFilter as <K extends keyof Values<TParsers>>(\n      key: K,\n      value: Values<TParsers>[K]\n    ) => void,\n    setFilters,\n    removeFilter,\n    clearFilters,\n    toggleFilter: toggleFilter as <K extends keyof Values<TParsers>>(\n      key: K,\n      value: Values<TParsers>[K]\n    ) => void,\n    getFilterValues,\n    isFilterActive: isFilterActive as <K extends keyof Values<TParsers>>(\n      key: K,\n      value?: Values<TParsers>[K]\n    ) => boolean,\n    isPending: false,\n  }\n}\n",
+      "type": "registry:hook",
+      "target": "hooks/filtering/useFilters.ts"
+    },
+    {
+      "path": "registry/default/filtering/utils.ts",
+      "content": "export function countActiveFilters(filters: Record<string, unknown>): number {\n  return Object.values(filters).filter(\n    (value) =>\n      value !== undefined &&\n      value !== null &&\n      value !== '' &&\n      !(Array.isArray(value) && value.length === 0)\n  ).length\n}\n",
+      "type": "registry:hook",
+      "target": "hooks/filtering/utils.ts"
+    }
+  ]
+}
