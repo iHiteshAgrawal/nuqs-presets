@@ -75,21 +75,19 @@ function removeItem(items: string[], item: string): string[] {
  * @param separator - Separator for array items (default: ',')
  * @param defaultSelected - Default selected items
  * @returns Parser for use with useQueryState or nuqs loaders/serializers
- * 
+ *
  * @example
  * // Use with loaders
  * const parser = createMultiSelectParser({ key: 'tags', separator: ',' })
  * const loader = createLoader({ tags: parser })
- * 
+ *
  * // Use with link serializers
  * const serializer = createSerializer({ tags: parser })
  * const href = serializer('/products', { tags: 'electronics,gadgets' })
  */
-export function createMultiSelectParser(options: {
-  key?: string
-  separator?: string
-  defaultSelected?: string[]
-} = {}) {
+export function createMultiSelectParser(
+  options: { key?: string; separator?: string; defaultSelected?: string[] } = {}
+) {
   const { separator = ',', defaultSelected = [] } = options
   const defaultValue = serializeSelection(defaultSelected, separator) ?? ''
   return parseAsString.withDefault(defaultValue)

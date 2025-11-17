@@ -104,22 +104,24 @@ function getPageNumbers(currentPage: number, totalPages: number, maxVisible = 7)
  * @param pageKey - Query param key for page (default: 'page')
  * @param pageSizeKey - Query param key for page size (default: 'pageSize')
  * @returns Parser object for use with useQueryStates or nuqs loaders/serializers
- * 
+ *
  * @example
  * // Use with loaders
  * const parsers = createPaginationParsers({ defaultPage: 1, defaultPageSize: 20 })
  * const loader = createLoader(parsers)
- * 
+ *
  * // Use with link serializers
  * const serializer = createSerializer(parsers)
  * const href = serializer('/products', { page: 2, pageSize: 20 })
  */
-export function createPaginationParsers(options: {
-  defaultPage?: number
-  defaultPageSize?: number
-  pageKey?: string
-  pageSizeKey?: string
-} = {}) {
+export function createPaginationParsers(
+  options: {
+    defaultPage?: number
+    defaultPageSize?: number
+    pageKey?: string
+    pageSizeKey?: string
+  } = {}
+) {
   const {
     defaultPage = 1,
     defaultPageSize = 10,

@@ -77,31 +77,29 @@ function getSortIndicatorUtil(order: SortOrder | null): '↑' | '↓' | '' {
  * @param defaultColumn - Default sort column
  * @param defaultOrder - Default sort order (default: 'asc')
  * @returns Parser object for use with useQueryStates or nuqs loaders/serializers
- * 
+ *
  * @example
  * // Use with loaders
- * const parsers = createSortingParsers({ 
- *   columns: ['name', 'createdAt', 'price'], 
- *   defaultColumn: 'createdAt' 
+ * const parsers = createSortingParsers({
+ *   columns: ['name', 'createdAt', 'price'],
+ *   defaultColumn: 'createdAt'
  * })
  * const loader = createLoader(parsers)
- * 
+ *
  * // Use with link serializers
  * const serializer = createSerializer(parsers)
  * const href = serializer('/products', { sortBy: 'price', order: 'desc' })
  */
-export function createSortingParsers<TColumns extends readonly string[]>(options: {
-  columns: TColumns
-  sortByKey?: string
-  sortOrderKey?: string
-  defaultColumn?: TColumns[number]
-  defaultOrder?: 'asc' | 'desc'
-} = { columns: [] as unknown as TColumns }) {
-  const {
-    columns,
-    sortByKey = 'sortBy',
-    sortOrderKey = 'order',
-  } = options
+export function createSortingParsers<TColumns extends readonly string[]>(
+  options: {
+    columns: TColumns
+    sortByKey?: string
+    sortOrderKey?: string
+    defaultColumn?: TColumns[number]
+    defaultOrder?: 'asc' | 'desc'
+  } = { columns: [] as unknown as TColumns }
+) {
+  const { columns, sortByKey = 'sortBy', sortOrderKey = 'order' } = options
 
   return {
     [sortByKey]: parseAsStringLiteral(columns as unknown as string[]),

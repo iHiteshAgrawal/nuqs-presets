@@ -58,7 +58,7 @@ function countActiveFilters(filters: Record<string, unknown>): number {
  * Export your parsers for use with nuqs loaders and serializers
  * @example
  * import { parseAsString, parseAsInteger, parseAsBoolean } from 'nuqs'
- * 
+ *
  * // Define filter parsers
  * export const productFilterParsers = {
  *   category: parseAsString,
@@ -66,11 +66,11 @@ function countActiveFilters(filters: Record<string, unknown>): number {
  *   maxPrice: parseAsInteger,
  *   inStock: parseAsBoolean
  * }
- * 
+ *
  * // Use with loaders (server-side)
  * import { createLoader } from 'nuqs/server'
  * const loadFilters = createLoader(productFilterParsers)
- * 
+ *
  * // Use with link serializers (client-side)
  * import { createSerializer } from 'nuqs'
  * const filtersSerializer = createSerializer(productFilterParsers)

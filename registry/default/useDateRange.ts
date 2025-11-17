@@ -189,30 +189,32 @@ function getLastMonthRange(): [Date, Date] {
  * @param defaultPreset - Default preset value
  * @param format - Date format ('iso' or 'timestamp', default: 'iso')
  * @returns Parser object for use with useQueryStates or nuqs loaders/serializers
- * 
+ *
  * @example
  * // Use with loaders
- * const parsers = createDateRangeParsers({ 
- *   startKey: 'from', 
+ * const parsers = createDateRangeParsers({
+ *   startKey: 'from',
  *   endKey: 'to',
  *   defaultPreset: 'last7days'
  * })
  * const loader = createLoader(parsers)
- * 
+ *
  * // Use with link serializers
  * const serializer = createSerializer(parsers)
- * const href = serializer('/analytics', { 
- *   from: '2024-01-01', 
+ * const href = serializer('/analytics', {
+ *   from: '2024-01-01',
  *   to: '2024-01-31',
  *   range: 'custom'
  * })
  */
-export function createDateRangeParsers(options: {
-  startKey?: string
-  endKey?: string
-  presetKey?: string
-  defaultPreset?: DatePreset
-} = {}) {
+export function createDateRangeParsers(
+  options: {
+    startKey?: string
+    endKey?: string
+    presetKey?: string
+    defaultPreset?: DatePreset
+  } = {}
+) {
   const {
     startKey = 'from',
     endKey = 'to',

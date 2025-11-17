@@ -42,13 +42,13 @@ export interface UseTabsResult<TTab = string> {
  * @param tabKey - Query param key for tab (default: 'tab')
  * @param defaultTab - Default tab value (defaults to first tab)
  * @returns Parser for use with useQueryState or nuqs loaders/serializers
- * 
+ *
  * @example
  * // Use with loaders
  * const tabs = ['overview', 'details', 'settings'] as const
  * const parser = createTabsParser({ tabs, defaultTab: 'overview' })
  * const loader = createLoader({ tab: parser })
- * 
+ *
  * // Use with link serializers
  * const serializer = createSerializer({ tab: parser })
  * const href = serializer('/dashboard', { tab: 'settings' })

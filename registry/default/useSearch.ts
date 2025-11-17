@@ -62,20 +62,17 @@ function useDebounce<T>(value: T, delay: number): T {
  * @param queryKey - Query param key for search (default: 'q')
  * @param defaultQuery - Default search value
  * @returns Parser for use with useQueryState or nuqs loaders/serializers
- * 
+ *
  * @example
  * // Use with loaders
  * const parser = createSearchParser({ queryKey: 'search', defaultQuery: '' })
  * const loader = createLoader({ search: parser })
- * 
+ *
  * // Use with link serializers
  * const serializer = createSerializer({ search: parser })
  * const href = serializer('/search', { search: 'react hooks' })
  */
-export function createSearchParser(options: {
-  queryKey?: string
-  defaultQuery?: string
-} = {}) {
+export function createSearchParser(options: { queryKey?: string; defaultQuery?: string } = {}) {
   const { defaultQuery } = options
   return defaultQuery ? parseAsString.withDefault(defaultQuery) : parseAsString
 }
