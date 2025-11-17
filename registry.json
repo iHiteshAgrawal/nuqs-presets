@@ -4,7 +4,7 @@
   "homepage": "https://github.com/iHiteshAgrawal/nuqs-presets",
   "items": [
     {
-      "name": "use-pagination",
+      "name": "usePagination",
       "type": "registry:hook",
       "title": "Pagination Hook",
       "description": "Type-safe pagination state management with URL synchronization using nuqs",
@@ -49,7 +49,7 @@
       ]
     },
     {
-      "name": "use-search",
+      "name": "useSearch",
       "type": "registry:hook",
       "title": "Search Hook",
       "description": "Type-safe search state management with URL synchronization and debouncing using nuqs",
@@ -89,7 +89,7 @@
       ]
     },
     {
-      "name": "use-sorting",
+      "name": "useSorting",
       "type": "registry:hook",
       "title": "Sorting Hook",
       "description": "Type-safe sorting state management with URL synchronization using nuqs",
@@ -129,7 +129,7 @@
       ]
     },
     {
-      "name": "use-filters",
+      "name": "useFilters",
       "type": "registry:hook",
       "title": "Filters Hook",
       "description": "Type-safe filtering state management with URL synchronization using nuqs",
@@ -169,7 +169,7 @@
       ]
     },
     {
-      "name": "use-multi-select",
+      "name": "useMultiSelect",
       "type": "registry:hook",
       "title": "Multi-Select Hook",
       "description": "Type-safe multi-select state management with URL synchronization using nuqs",
@@ -209,7 +209,7 @@
       ]
     },
     {
-      "name": "use-tabs",
+      "name": "useTabs",
       "type": "registry:hook",
       "title": "Tabs Hook",
       "description": "Type-safe tabs state management with URL synchronization using nuqs",
@@ -244,7 +244,7 @@
       ]
     },
     {
-      "name": "use-date-range",
+      "name": "useDateRange",
       "type": "registry:hook",
       "title": "Date Range Hook",
       "description": "Type-safe date range state management with URL synchronization and presets using nuqs",
