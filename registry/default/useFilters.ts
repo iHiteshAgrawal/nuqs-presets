@@ -1,7 +1,85 @@
-import { useQueryStates } from 'nuqs'
+import { useQueryStates, type Values } from 'nuqs'
 import { useCallback, useMemo } from 'react'
-import type { UseFiltersOptions, UseFiltersResult, Values } from './types'
-import { countActiveFilters } from './utils'
+
+// ============================================================================
+// Types
+// ============================================================================
+
+export type HistoryMode = 'push' | 'replace'
+
+export interface BaseHookOptions {
+  history?: HistoryMode
+  scroll?: boolean
+  shallow?: boolean
+}
+
+// biome-ignore lint/suspicious/noExplicitAny: parsers can be any nuqs parser type
+export interface UseFiltersOptions<TParsers extends Record<string, any> = Record<string, any>>
+  extends BaseHookOptions {
+  parsers: TParsers
+  onChange?: (filters: Values<TParsers>) => void
+}
+
+export interface UseFiltersResult<TFilters = Record<string, unknown>> {
+  filters: TFilters
+  hasFilters: boolean
+  activeCount: number
+  setFilter: <K extends keyof TFilters>(key: K, value: TFilters[K]) => void
+  setFilters: (filters: Partial<TFilters>) => void
+  removeFilter: (key: keyof TFilters) => void
+  clearFilters: () => void
+  toggleFilter: <K extends keyof TFilters>(key: K, value: TFilters[K]) => void
+  getFilterValues: (key: keyof TFilters) => unknown[]
+  isFilterActive: <K extends keyof TFilters>(key: K, value?: TFilters[K]) => boolean
+  isPending: boolean
+}
+
+export type { Values }
+
+// ============================================================================
+// Utilities
+// ============================================================================
+
+function countActiveFilters(filters: Record<string, unknown>): number {
+  return Object.values(filters).filter(
+    (value) =>
+      value !== undefined &&
+      value !== null &&
+      value !== '' &&
+      !(Array.isArray(value) && value.length === 0)
+  ).length
+}
+
+// ============================================================================
+// Parser Definitions (exported for composability with nuqs loaders/serializers)
+// ============================================================================
+
+/**
+ * Export your parsers for use with nuqs loaders and serializers
+ * @example
+ * import { parseAsString, parseAsInteger, parseAsBoolean } from 'nuqs'
+ *
+ * // Define filter parsers
+ * export const productFilterParsers = {
+ *   category: parseAsString,
+ *   minPrice: parseAsInteger,
+ *   maxPrice: parseAsInteger,
+ *   inStock: parseAsBoolean
+ * }
+ *
+ * // Use with loaders (server-side)
+ * import { createLoader } from 'nuqs/server'
+ * const loadFilters = createLoader(productFilterParsers)
+ *
+ * // Use with link serializers (client-side)
+ * import { createSerializer } from 'nuqs'
+ * const filtersSerializer = createSerializer(productFilterParsers)
+ * const href = filtersSerializer('/products', { category: 'electronics', inStock: true })
+ */
+
+// ============================================================================
+// Hook
+// ============================================================================
 
 // biome-ignore lint/suspicious/noExplicitAny: parsers can be any nuqs parser type
 export function useFilters<TParsers extends Record<string, any>>(

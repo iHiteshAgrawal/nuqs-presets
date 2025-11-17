@@ -560,6 +560,10 @@ MIT © [Hitesh Agrawal](https://github.com/iHiteshAgrawal)
 
 Built on top of the excellent [nuqs](https://nuqs.dev) by [François Best](https://github.com/47ng).
 
+## Star History
+
+[![Star History](https://api.star-history.com/svg?repos=iHiteshAgrawal/nuqs-presets&type=Date)](https://star-history.com/#iHiteshAgrawal/nuqs-presets)
+
 ---
 
 **⭐ If you find this useful, please star the repo!**
